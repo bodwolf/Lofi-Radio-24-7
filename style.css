@@ -7,7 +7,7 @@ body {
     align-items: center;
     font-family: 'Tajawal', sans-serif;
     color: white;
-    /* خلفية متحركة - يمكنك تغيير الرابط لأي صورة GIF تعجبك */
+    /* خلفية متحركة */
     background: url('https://media.giphy.com/media/tXzFpjeqVnE7m/giphy.gif') no-repeat center center fixed;
     background-size: cover;
 }
@@ -21,15 +21,69 @@ body::before {
     z-index: -1;
 }
 
+/* تصميم الأسطوانة */
+.vinyl-record {
+    width: 250px;       /* كبرنا الحجم */
+    height: 250px;
+    background: #101010;
+    border-radius: 50%;
+    margin: 20px auto;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6); /* ظل أقوى */
+    transition: 0.5s;
+}
+
+/* الجزء الداخلي للأسطوانة */
+.vinyl-center {
+    width: 90px;        /* كبرنا المنتصف */
+    height: 90px;
+    background: url('https://media.giphy.com/media/u3T7c4G8SbkpcRrqJp/giphy.gif');
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+    border: 3px solid #222;
+}
+
+/* كلاس الحركة للدوران */
+.spinning {
+    animation: spin 5s linear infinite; /* جعلتها 5 ثواني لحركة هادئة */
+}
+
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
+
+/* الحاوية الزجاجية المشعة */
 .radio-container {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px); /* تأثير الزجاج */
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
     padding: 40px;
     border-radius: 20px;
     text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-    width: 300px;
+    /* حدود مضيئة */
+    border: 2px solid rgba(80, 200, 255, 0.3);
+    width: 320px;
+    transition: all 0.3s ease;
+    /* تأثير التوهج السحري - طبقات متعددة للعمق */
+    box-shadow: 
+        0 0 10px rgba(80, 200, 255, 0.2), /* توهج داخلي خفيف */
+        0 0 30px rgba(80, 150, 255, 0.2), /* هالة متوسطة */
+        0 0 60px rgba(80, 100, 255, 0.1); /* هالة خارجية واسعة */
+}
+
+/* زيادة التوهج عند مرور الماوس على الحاوية */
+.radio-container:hover {
+    transform: translateY(-5px);
+    border-color: rgba(80, 200, 255, 0.6);
+    box-shadow: 
+        0 0 20px rgba(80, 200, 255, 0.4),
+        0 0 50px rgba(80, 150, 255, 0.3),
+        0 0 100px rgba(80, 100, 255, 0.2);
+}
 }
 
 .status-indicator {
@@ -51,8 +105,8 @@ body::before {
     margin-left: 5px;
 }
 
-h1 { margin: 0; font-size: 1.8rem; }
-p { color: #ddd; font-size: 0.9rem; margin-bottom: 30px; }
+h1 { margin: 0; font-size: 1.8rem; margin-bottom: 10px; }
+p { color: #ddd; font-size: 0.9rem; margin-bottom: 20px; }
 
 .controls {
     display: flex;
@@ -62,27 +116,97 @@ p { color: #ddd; font-size: 0.9rem; margin-bottom: 30px; }
 }
 
 .btn {
-    background: white;
+    background: rgba(255, 255, 255, 0.9);
     color: #333;
     border: none;
     width: 60px; height: 60px;
     border-radius: 50%;
     font-size: 1.5rem;
     cursor: pointer;
-    transition: 0.3s;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* حركة ناعمة */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
-.btn:hover { transform: scale(1.1); }
-.hidden { display: none; }
+/* تأثير التوهج عند مرور الماوس على الزر */
+.btn:hover {
+    transform: scale(1.1);
+    background: #fff;
+    color: #4facfe; /* تغيير لون الأيقونة للأزرق */
+    box-shadow: 
+        0 0 20px rgba(255, 255, 255, 0.6),
+        0 0 40px rgba(79, 172, 254, 0.4); /* توهج أزرق مشع */
+}
+
+/* تخصيص أزرار التنقل الجانبية */
+.nav-btn:hover {
+    background: white;
+    color: #4facfe;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+}
 
 .volume-control {
     display: flex;
     align-items: center;
     gap: 10px;
+    margin-top: 10px;
 }
 
 #player-hidden {
     position: absolute;
-    visibility: hidden; /* إخفاء فيديو اليوتيوب */
+    visibility: hidden;
     width: 0; height: 0;
+}
+
+/* --- تخصيص شريط الصوت --- */
+
+/* 1. إلغاء الشكل الافتراضي وتجهيز الشريط */
+#volumeSlider {
+    -webkit-appearance: none;  /* إلغاء ستايل المتصفح الافتراضي */
+    width: 100px;              /* عرض الشريط */
+    height: 4px;               /* سماكة الشريط */
+    background: rgba(255, 255, 255, 0.2); /* لون الشريط (زجاجي) */
+    border-radius: 5px;
+    outline: none;
+    transition: opacity .2s;
+    cursor: pointer;
+}
+
+/* تأثير عند مرور الماوس */
+#volumeSlider:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* 2. تخصيص "المقبض" (الدائرة) لمتصفحات كروم وسفاري وإيدج */
+#volumeSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff;          /* لون المقبض أبيض */
+    cursor: pointer;
+    /* إضافة توهج نيون للمقبض ليشبه الأزرار */
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 
+                0 0 20px rgba(79, 172, 254, 0.6); 
+    transition: transform 0.2s;
+}
+
+/* تكبير المقبض قليلاً عند الضغط */
+#volumeSlider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+}
+
+/* 3. تخصيص "المقبض" لمتصفح فايرفوكس (ضروري للتوافق) */
+#volumeSlider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 
+                0 0 20px rgba(79, 172, 254, 0.6);
 }

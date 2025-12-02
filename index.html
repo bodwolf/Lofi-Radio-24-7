@@ -6,32 +6,37 @@
     <title>Lofi Radio 24/7 🎧</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
     <link rel="stylesheet" href="style.css">
-    
     <style>
-        /* تعديل مهم: الفيديو لا يجب أن يختفي تماماً لكي يعمل */
-        #player-wrapper {
-            position: absolute;
-            top: -9999px; /* نرسله خارج الشاشة بدلاً من إخفائه */
-            left: -9999px;
-            opacity: 0;
-        }
+        #player-wrapper { position: absolute; top: -9999px; left: -9999px; opacity: 0; }
+        /* تنسيق أزرار التنقل الجديدة */
+        .station-controls { display: flex; align-items: center; gap: 15px; margin-top: 15px; }
+        .nav-btn { background: none; border: 1px solid rgba(255,255,255,0.3); color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: 0.3s; }
+        .nav-btn:hover { background: white; color: black; }
+        #stationName { font-size: 1rem; color: #4facfe; margin-top: 5px; font-weight: bold; min-height: 25px;}
     </style>
 </head>
 <body>
 
     <div class="radio-container">
-        <div class="status-indicator">
-            <span class="dot"></span> مباشر 24/7
-        </div>
+        <div class="status-indicator"><span class="dot"></span> مباشر 24/7</div>
         
         <h1>bod Radio Station</h1>
-        <p>استرخي، ركز، وابدأ العمل.</p>
+        <div id="stationName">Lofi Girl - Study</div>
+        
+        <div class="vinyl-record">
+            <div class="vinyl-center"></div>
+        </div>
 
         <div class="controls">
-            <button id="playBtn" class="btn"><i class="fas fa-play"></i></button>
-            <button id="pauseBtn" class="btn hidden"><i class="fas fa-pause"></i></button>
+            <div class="station-controls">
+                <button id="prevBtn" class="nav-btn"><i class="fas fa-step-forward"></i></button>
+                
+                <button id="playBtn" class="btn"><i class="fas fa-play"></i></button>
+                <button id="pauseBtn" class="btn hidden"><i class="fas fa-pause"></i></button>
+                
+                <button id="nextBtn" class="nav-btn"><i class="fas fa-step-backward"></i></button>
+            </div>
             
             <div class="volume-control">
                 <i class="fas fa-volume-up"></i>
@@ -39,51 +44,67 @@
             </div>
         </div>
 
-        <div id="player-wrapper">
-            <div id="player"></div>
-        </div>
+        <div id="player-wrapper"><div id="player"></div></div>
     </div>
 
     <script>
-        var player;
+        // --- إعداد القنوات ---
+        const stations = [
+            { name: "Lofi Girl - Study 📚", id: "jfKfPfyJRdk" },
+            { name: "Synthwave - Gaming 🎮", id: "4xDzrJKXOOY" },
+            { name: "Lofi Sleep - Relax 💤", id: "rUxyKA_-grg" }
+        ];
+        let currentStationIndex = 0; // نبدأ بأول قناة
 
-        // دالة يوتيوب
+        var player;
+        const vinylRecord = document.querySelector('.vinyl-record');
+        const stationNameEl = document.getElementById('stationName');
+
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
-                height: '200',
-                width: '200',
-                videoId: 'jfKfPfyJRdk', // Lofi Girl ID
-                playerVars: {
-                    'playsinline': 1,
-                    'controls': 0,
-                    'disablekb': 1
-                },
-                events: {
-                    'onReady': onPlayerReady,
-                    'onError': onPlayerError
-                }
+                height: '200', width: '200',
+                videoId: stations[currentStationIndex].id, // تشغيل القناة الأولى
+                playerVars: { 'playsinline': 1, 'controls': 0, 'disablekb': 1 },
+                events: { 'onReady': onPlayerReady }
             });
         }
 
         function onPlayerReady(event) {
-            console.log("الراديو جاهز للعمل!");
             player.setVolume(50);
         }
 
-        function onPlayerError(event) {
-            console.error("حدث خطأ في اليوتيوب رقم:", event.data);
-        }
-
-        // التحكم بالأزرار
         const playBtn = document.getElementById('playBtn');
         const pauseBtn = document.getElementById('pauseBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
         const volumeSlider = document.getElementById('volumeSlider');
+
+        // دالة لتغيير المحطة
+        function loadStation(index) {
+            currentStationIndex = index;
+            // التأكد من أن المؤشر لا يخرج عن حدود المصفوفة
+            if (currentStationIndex >= stations.length) currentStationIndex = 0;
+            if (currentStationIndex < 0) currentStationIndex = stations.length - 1;
+
+            // تغيير الفيديو والاسم
+            player.loadVideoById(stations[currentStationIndex].id);
+            stationNameEl.innerText = stations[currentStationIndex].name;
+
+            // إذا كان الراديو يعمل، استمر في الدوران
+            if (!playBtn.classList.contains('hidden')) {
+                 // إذا كان متوقفاً، لا تفعل شيئاً، سيعمل عند ضغط زر التشغيل
+            } else {
+                 // إذا كان يعمل حالياً، تأكد من الدوران
+                 vinylRecord.classList.add('spinning');
+            }
+        }
 
         playBtn.addEventListener('click', () => {
             if(player && player.playVideo) {
                 player.playVideo();
                 playBtn.classList.add('hidden');
                 pauseBtn.classList.remove('hidden');
+                vinylRecord.classList.add('spinning');
             }
         });
 
@@ -92,16 +113,31 @@
                 player.pauseVideo();
                 pauseBtn.classList.add('hidden');
                 playBtn.classList.remove('hidden');
+                vinylRecord.classList.remove('spinning');
             }
         });
 
+        // زر التالي
+        nextBtn.addEventListener('click', () => {
+            loadStation(currentStationIndex + 1);
+            // تحويل الزر إلى وضع التشغيل تلقائياً عند تغيير القناة
+            playBtn.classList.add('hidden');
+            pauseBtn.classList.remove('hidden');
+            vinylRecord.classList.add('spinning');
+        });
+
+        // زر السابق
+        prevBtn.addEventListener('click', () => {
+            loadStation(currentStationIndex - 1);
+            playBtn.classList.add('hidden');
+            pauseBtn.classList.remove('hidden');
+            vinylRecord.classList.add('spinning');
+        });
+
         volumeSlider.addEventListener('input', (e) => {
-            if(player && player.setVolume) {
-                player.setVolume(e.target.value);
-            }
+            if(player) player.setVolume(e.target.value);
         });
     </script>
-    
     <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>
