@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lofi Radio 24/7 🎧</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        /* تعديل مهم: الفيديو لا يجب أن يختفي تماماً لكي يعمل */
+        #player-wrapper {
+            position: absolute;
+            top: -9999px; /* نرسله خارج الشاشة بدلاً من إخفائه */
+            left: -9999px;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="radio-container">
+        <div class="status-indicator">
+            <span class="dot"></span> مباشر 24/7
+        </div>
+        
+        <h1>Lofi Radio Station</h1>
+        <p>استرخي، ركز، وابدأ العمل.</p>
+
+        <div class="controls">
+            <button id="playBtn" class="btn"><i class="fas fa-play"></i></button>
+            <button id="pauseBtn" class="btn hidden"><i class="fas fa-pause"></i></button>
+            
+            <div class="volume-control">
+                <i class="fas fa-volume-up"></i>
+                <input type="range" id="volumeSlider" min="0" max="100" value="50">
+            </div>
+        </div>
+
+        <div id="player-wrapper">
+            <div id="player"></div>
+        </div>
+    </div>
+
+    <script>
+        var player;
+
+        // دالة يوتيوب
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '200',
+                width: '200',
+                videoId: 'jfKfPfyJRdk', // Lofi Girl ID
+                playerVars: {
+                    'playsinline': 1,
+                    'controls': 0,
+                    'disablekb': 1
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onError': onPlayerError
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            console.log("الراديو جاهز للعمل!");
+            player.setVolume(50);
+        }
+
+        function onPlayerError(event) {
+            console.error("حدث خطأ في اليوتيوب رقم:", event.data);
+        }
+
+        // التحكم بالأزرار
+        const playBtn = document.getElementById('playBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const volumeSlider = document.getElementById('volumeSlider');
+
+        playBtn.addEventListener('click', () => {
+            if(player && player.playVideo) {
+                player.playVideo();
+                playBtn.classList.add('hidden');
+                pauseBtn.classList.remove('hidden');
+            }
+        });
+
+        pauseBtn.addEventListener('click', () => {
+            if(player && player.pauseVideo) {
+                player.pauseVideo();
+                pauseBtn.classList.add('hidden');
+                playBtn.classList.remove('hidden');
+            }
+        });
+
+        volumeSlider.addEventListener('input', (e) => {
+            if(player && player.setVolume) {
+                player.setVolume(e.target.value);
+            }
+        });
+    </script>
+    
+    <script src="https://www.youtube.com/iframe_api"></script>
+</body>
+</html>

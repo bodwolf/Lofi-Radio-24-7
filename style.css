@@ -1,0 +1,88 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Tajawal', sans-serif;
+    color: white;
+    /* خلفية متحركة - يمكنك تغيير الرابط لأي صورة GIF تعجبك */
+    background: url('https://media.giphy.com/media/LDBuYzAwu8L4I/giphy.gif') no-repeat center center fixed;
+    background-size: cover;
+}
+
+/* طبقة تعتيم فوق الخلفية لوضوح النص */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+}
+
+.radio-container {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px); /* تأثير الزجاج */
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    width: 300px;
+}
+
+.status-indicator {
+    background: rgba(255, 0, 0, 0.2);
+    color: #ff4d4d;
+    padding: 5px 15px;
+    border-radius: 50px;
+    display: inline-block;
+    font-weight: bold;
+    margin-bottom: 20px;
+    font-size: 0.8rem;
+}
+
+.dot {
+    height: 8px; width: 8px;
+    background-color: #ff4d4d;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 5px;
+}
+
+h1 { margin: 0; font-size: 1.8rem; }
+p { color: #ddd; font-size: 0.9rem; margin-bottom: 30px; }
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.btn {
+    background: white;
+    color: #333;
+    border: none;
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn:hover { transform: scale(1.1); }
+.hidden { display: none; }
+
+.volume-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#player-hidden {
+    position: absolute;
+    visibility: hidden; /* إخفاء فيديو اليوتيوب */
+    width: 0; height: 0;
+}
