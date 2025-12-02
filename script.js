@@ -6,7 +6,7 @@ function onYouTubeIframeAPIReady() {
         height: '0',
         width: '0',
         // هذا هو ID البث المباشر لقناة Lofi Girl الشهيرة
-        videoId: 'sF80I-TQiW0', 
+        videoId: '4xDzrJKXOOY', 
         playerVars: {
             'autoplay': 0,
             'controls': 0,
