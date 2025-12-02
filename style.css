@@ -1,212 +1,135 @@
+/* --- الألوان والسمات --- */
+:root { --main-glow: 80, 200, 255; --secondary-glow: 79, 172, 254; --accent-color: #4facfe; }
+body.theme-purple { --main-glow: 189, 52, 235; --secondary-glow: 235, 52, 217; --accent-color: #bd34eb; }
+body.theme-orange { --main-glow: 255, 100, 50; --secondary-glow: 255, 165, 0; --accent-color: #ff6432; }
+
+/* إعدادات الصفحة */
 body {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: 'Tajawal', sans-serif;
-    color: white;
-    /* خلفية متحركة */
+    margin: 0; padding: 0; height: 100vh;
+    display: flex; justify-content: center; align-items: center;
+    font-family: 'Tajawal', sans-serif; color: white;
     background: url('https://media.giphy.com/media/tXzFpjeqVnE7m/giphy.gif') no-repeat center center fixed;
-    background-size: cover;
+    background-size: cover; transition: background 0.5s ease;
+    overflow: hidden; width: 100vw;
 }
+body::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: -1; }
+body::after { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url("https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif"); opacity: 0.04; pointer-events: none; z-index: 5; }
 
-/* طبقة تعتيم فوق الخلفية لوضوح النص */
-body::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: -1;
-}
-
-/* تصميم الأسطوانة */
-.vinyl-record {
-    width: 250px;       /* كبرنا الحجم */
-    height: 250px;
-    background: #101010;
-    border-radius: 50%;
-    margin: 20px auto;
-    border: 4px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.6); /* ظل أقوى */
-    transition: 0.5s;
-}
-
-/* الجزء الداخلي للأسطوانة */
-.vinyl-center {
-    width: 90px;        /* كبرنا المنتصف */
-    height: 90px;
-    background: url('https://media.giphy.com/media/u3T7c4G8SbkpcRrqJp/giphy.gif');
-    background-size: cover;
-    background-position: center;
-    border-radius: 50%;
-    border: 3px solid #222;
-}
-
-/* كلاس الحركة للدوران */
-.spinning {
-    animation: spin 5s linear infinite; /* جعلتها 5 ثواني لحركة هادئة */
-}
-
-@keyframes spin {
-    100% { transform: rotate(360deg); }
-}
-
-/* الحاوية الزجاجية المشعة */
-.radio-container {
+/* --- الراديو العريض --- */
+.radio-device {
+    width: 480px; max-width: 95%;
     background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    padding: 40px;
-    border-radius: 20px;
-    text-align: center;
-    /* حدود مضيئة */
-    border: 2px solid rgba(80, 200, 255, 0.3);
-    width: 320px;
-    transition: all 0.3s ease;
-    /* تأثير التوهج السحري - طبقات متعددة للعمق */
-    box-shadow: 
-        0 0 10px rgba(80, 200, 255, 0.2), /* توهج داخلي خفيف */
-        0 0 30px rgba(80, 150, 255, 0.2), /* هالة متوسطة */
-        0 0 60px rgba(80, 100, 255, 0.1); /* هالة خارجية واسعة */
+    backdrop-filter: blur(25px) saturate(180%); -webkit-backdrop-filter: blur(25px) saturate(180%);
+    border-radius: 30px;
+    border: 2px solid rgba(var(--main-glow), 0.3);
+    box-shadow: 0 0 30px rgba(var(--main-glow), 0.2), 0 0 60px rgba(var(--secondary-glow), 0.1);
+    padding: 30px; text-align: center;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative; z-index: 20;
 }
+.radio-device:hover { transform: translateY(-5px); box-shadow: 0 0 40px rgba(var(--main-glow), 0.3), 0 0 80px rgba(var(--secondary-glow), 0.2); border-color: rgba(var(--main-glow), 0.5); }
 
-/* زيادة التوهج عند مرور الماوس على الحاوية */
-.radio-container:hover {
-    transform: translateY(-5px);
-    border-color: rgba(80, 200, 255, 0.6);
-    box-shadow: 
-        0 0 20px rgba(80, 200, 255, 0.4),
-        0 0 50px rgba(80, 150, 255, 0.3),
-        0 0 100px rgba(80, 100, 255, 0.2);
-}
-}
+/* الواجهة */
+.interface-panel { display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%; }
+.tuner-bar { width: 100%; height: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: center; align-items: flex-end; position: relative; }
+.frequency-lines { font-family: monospace; letter-spacing: 3px; color: rgba(255,255,255,0.3); font-size: 0.8rem; }
+.tuner-marker { position: absolute; bottom: 0; left: 50%; width: 2px; height: 15px; background: var(--accent-color); box-shadow: 0 0 10px var(--accent-color); }
 
-.status-indicator {
-    background: rgba(255, 0, 0, 0.2);
-    color: #ff4d4d;
-    padding: 5px 15px;
-    border-radius: 50px;
-    display: inline-block;
-    font-weight: bold;
-    margin-bottom: 20px;
-    font-size: 0.8rem;
+/* --- الشاشة --- */
+.radio-screen {
+    width: 100%; height: 180px;
+    background: rgba(10, 10, 15, 0.85); border-radius: 15px; padding: 15px;
+    border: 1px solid rgba(var(--main-glow), 0.2); box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column; justify-content: center;
 }
+.scanlines { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.2) 50%); background-size: 100% 4px; z-index: 2; pointer-events: none; }
+.time-display { position: absolute; top: 10px; right: 15px; font-family: 'Orbitron', sans-serif; font-size: 0.8rem; color: rgba(255,255,255,0.7); background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 4px; z-index: 3; border: 1px solid rgba(255,255,255,0.1); }
 
-.dot {
-    height: 8px; width: 8px;
-    background-color: #ff4d4d;
+/* --- الموجات الخلفية (Waves) --- */
+.waves-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 60%; z-index: 1; opacity: 0.3; pointer-events: none; transition: opacity 0.5s; }
+.wave-line { position: absolute; width: 200%; height: 100%; background: var(--accent-color); -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none"><path d="M0,50 C150,100 350,0 500,50 C650,100 850,0 1000,50 L1000,100 L0,100 Z" fill="black"/></svg>'); mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none"><path d="M0,50 C150,100 350,0 500,50 C650,100 850,0 1000,50 L1000,100 L0,100 Z" fill="black"/></svg>'); -webkit-mask-size: 50% 100%; mask-size: 50% 100%; }
+.wave-1 { animation: moveWave 8s linear infinite; opacity: 0.5; bottom: 0; }
+.wave-2 { animation: moveWave 12s linear infinite reverse; opacity: 0.3; height: 80%; bottom: 10%; }
+.wave-3 { animation: moveWave 15s linear infinite; opacity: 0.2; height: 60%; bottom: 20%; }
+.radio-device:not(.playing) .wave-line { animation-play-state: paused; }
+@keyframes moveWave { 0% { -webkit-mask-position: 0 0; mask-position: 0 0; } 100% { -webkit-mask-position: 100% 0; mask-position: 100% 0; } }
+
+/* --- محتوى الشاشة --- */
+.screen-content { display: flex; align-items: center; justify-content: space-around; width: 100%; height: 100%; z-index: 3; padding-top: 10px; }
+
+/* قسم التردد */
+.frequency-number { font-family: 'Orbitron', sans-serif; font-size: 3rem; color: var(--accent-color); text-shadow: 0 0 15px var(--accent-color); }
+.frequency-number small { font-size: 1rem; margin-right: 5px; opacity: 0.8; }
+.wave-meter { display: flex; justify-content: center; align-items: flex-end; gap: 3px; height: 15px; margin-top: 10px; }
+.meter-bar { width: 4px; background: var(--accent-color); opacity: 0.2; border-radius: 2px; transition: 0.3s; height: 5px; }
+.meter-bar.active { animation: bounce 0.5s infinite alternate; opacity: 0.8; box-shadow: 0 0 5px var(--accent-color); }
+.meter-text { display: none; }
+
+/* --- القرص الزجاجي الشفاف (متناسق مع الحاوية) --- */
+.disc-container { 
+    width: 140px; height: 140px; 
+    display: flex; justify-content: center; align-items: center; 
+}
+.vinyl-record {
+    width: 100%; height: 100%; /* حجم كامل */
+    background: rgba(255, 255, 255, 0.05); /* زجاجي */
+    backdrop-filter: blur(5px);
     border-radius: 50%;
-    display: inline-block;
-    margin-left: 5px;
+    border: 2px solid rgba(var(--accent-color), 0.5);
+    box-shadow: 0 0 20px rgba(var(--accent-color), 0.2), inset 0 0 20px rgba(var(--accent-color), 0.1);
+    display: flex; justify-content: center; align-items: center;
+    position: relative;
+    background-image: repeating-radial-gradient(rgba(255,255,255,0.05) 0, rgba(255,255,255,0.05) 2px, transparent 3px, transparent 5px);
 }
-
-h1 { margin: 0; font-size: 1.8rem; margin-bottom: 10px; }
-p { color: #ddd; font-size: 0.9rem; margin-bottom: 20px; }
-
-.controls {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
+.vinyl-center { 
+    width: 35%; height: 35%; /* نسبة مئوية للحفاظ على التناسق */
+    background: url('https://media.giphy.com/media/u3T7c4G8SbkpcRrqJp/giphy.gif'); 
+    background-size: cover; border-radius: 50%; border: 2px solid rgba(var(--accent-color), 0.8); 
+    box-shadow: 0 0 10px rgba(var(--accent-color), 0.5); z-index: 2; 
 }
+.vinyl-record.spinning { animation: spin 4s linear infinite; }
+@keyframes spin { 100% { transform: rotate(360deg); } }
 
-.btn {
-    background: rgba(255, 255, 255, 0.9);
-    color: #333;
-    border: none;
-    width: 60px; height: 60px;
-    border-radius: 50%;
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* حركة ناعمة */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+/* --- المعلومات والأزرار --- */
+.station-info { text-align: center; width: 100%; }
+.status-indicator { background: rgba(255, 0, 0, 0.2); color: #ff4d4d; padding: 2px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; display: inline-block; margin-bottom: 5px; }
+.dot { height: 6px; width: 6px; background-color: #ff4d4d; border-radius: 50%; display: inline-block; margin-left: 5px; }
+h1 { margin: 0; font-size: 1.3rem; color: var(--accent-color); text-shadow: 0 0 10px rgba(var(--main-glow), 0.5); white-space: nowrap; }
+
+.controls-row { display: flex; align-items: center; gap: 20px; transition: 0.3s; }
+.btn { width: 60px; height: 60px; border-radius: 50%; background: white; color: #333; border: none; font-size: 1.4rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; box-shadow: 0 0 15px rgba(255,255,255,0.3); }
+.btn:hover { transform: scale(1.1); color: var(--accent-color); box-shadow: 0 0 25px rgba(var(--main-glow), 0.6); }
+.nav-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
+.nav-btn:hover { background: white; color: var(--accent-color); box-shadow: 0 0 10px rgba(255,255,255,0.4); }
+.hidden { display: none; }
+.volume-control { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; width: 90%; justify-content: center; }
+#volumeSlider { -webkit-appearance: none; width: 100%; height: 4px; background: rgba(255, 255, 255, 0.3); border-radius: 5px; outline: none; cursor: pointer; }
+#volumeSlider:hover { background: rgba(255, 255, 255, 0.5); }
+#volumeSlider::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #fff; cursor: pointer; box-shadow: 0 0 10px var(--accent-color); transition: transform 0.2s; }
+#volumeSlider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+.top-controls { position: absolute; top: 20px; right: 20px; display: flex; gap: 10px; z-index: 100; }
+@keyframes bounce { to { transform: scaleY(1.3); } }
+
+/* وضع التصغير */
+.radio-device.minimized {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    width: 90%; max-width: 600px; height: 80px; padding: 10px 20px;
+    flex-direction: row; align-items: center; justify-content: space-between;
+    background: rgba(0, 0, 0, 0.85); border-radius: 50px;
 }
+.radio-device.minimized .radio-screen, .radio-device.minimized .tuner-bar, .radio-device.minimized .volume-control, .radio-device.minimized .station-info .status-indicator { display: none; }
+.radio-device.minimized .station-info h1 { font-size: 1rem; margin: 0; text-align: right; }
+.radio-device.minimized .controls-row { margin: 0; gap: 10px; }
+.radio-device.minimized .btn { width: 45px; height: 45px; font-size: 1.1rem; }
+.radio-device.minimized .nav-btn { width: 35px; height: 35px; }
 
-/* تأثير التوهج عند مرور الماوس على الزر */
-.btn:hover {
-    transform: scale(1.1);
-    background: #fff;
-    color: #4facfe; /* تغيير لون الأيقونة للأزرق */
-    box-shadow: 
-        0 0 20px rgba(255, 255, 255, 0.6),
-        0 0 40px rgba(79, 172, 254, 0.4); /* توهج أزرق مشع */
-}
-
-/* تخصيص أزرار التنقل الجانبية */
-.nav-btn:hover {
-    background: white;
-    color: #4facfe;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-}
-
-.volume-control {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-#player-hidden {
-    position: absolute;
-    visibility: hidden;
-    width: 0; height: 0;
-}
-
-/* --- تخصيص شريط الصوت --- */
-
-/* 1. إلغاء الشكل الافتراضي وتجهيز الشريط */
-#volumeSlider {
-    -webkit-appearance: none;  /* إلغاء ستايل المتصفح الافتراضي */
-    width: 100px;              /* عرض الشريط */
-    height: 4px;               /* سماكة الشريط */
-    background: rgba(255, 255, 255, 0.2); /* لون الشريط (زجاجي) */
-    border-radius: 5px;
-    outline: none;
-    transition: opacity .2s;
-    cursor: pointer;
-}
-
-/* تأثير عند مرور الماوس */
-#volumeSlider:hover {
-    background: rgba(255, 255, 255, 0.4);
-}
-
-/* 2. تخصيص "المقبض" (الدائرة) لمتصفحات كروم وسفاري وإيدج */
-#volumeSlider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: #fff;          /* لون المقبض أبيض */
-    cursor: pointer;
-    /* إضافة توهج نيون للمقبض ليشبه الأزرار */
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 
-                0 0 20px rgba(79, 172, 254, 0.6); 
-    transition: transform 0.2s;
-}
-
-/* تكبير المقبض قليلاً عند الضغط */
-#volumeSlider::-webkit-slider-thumb:hover {
-    transform: scale(1.2);
-}
-
-/* 3. تخصيص "المقبض" لمتصفح فايرفوكس (ضروري للتوافق) */
-#volumeSlider::-moz-range-thumb {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: #fff;
-    cursor: pointer;
-    border: none;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 
-                0 0 20px rgba(79, 172, 254, 0.6);
+@media (max-width: 500px) {
+    .radio-device { width: 90%; margin-top: 40px; padding: 20px; }
+    .screen-content { flex-direction: column-reverse; gap: 10px; }
+    .frequency-number { font-size: 2.5rem; }
+    .radio-screen { height: 200px; }
+    .controls-row { gap: 10px; }
+    .btn { width: 50px; height: 50px; font-size: 1.2rem; }
+    .top-controls { top: 10px; right: 10px; }
 }

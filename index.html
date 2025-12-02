@@ -3,140 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lofi Radio 24/7 🎧</title>
+    <title>Ultimate Lofi Radio 📻</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <style>
-        #player-wrapper { position: absolute; top: -9999px; left: -9999px; opacity: 0; }
-        /* تنسيق أزرار التنقل الجديدة */
-        .station-controls { display: flex; align-items: center; gap: 15px; margin-top: 15px; }
-        .nav-btn { background: none; border: 1px solid rgba(255,255,255,0.3); color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: 0.3s; }
-        .nav-btn:hover { background: white; color: black; }
-        #stationName { font-size: 1rem; color: #4facfe; margin-top: 5px; font-weight: bold; min-height: 25px;}
-    </style>
+    <style> #player-wrapper { position: absolute; top: -9999px; left: -9999px; opacity: 0; } </style>
 </head>
 <body>
 
-    <div class="radio-container">
-        <div class="status-indicator"><span class="dot"></span> مباشر 24/7</div>
-        
-        <h1>bod Radio Station</h1>
-        <div id="stationName">Lofi Girl - Study</div>
-        
-        <div class="vinyl-record">
-            <div class="vinyl-center"></div>
-        </div>
+    <div class="top-controls">
+        <button id="bgBtn" class="nav-btn" title="تغيير الخلفية"><i class="fas fa-image"></i></button>
+        <button id="themeBtn" class="nav-btn" title="تغيير السمات"><i class="fas fa-palette"></i></button>
+        <button id="minimizeBtn" class="nav-btn" title="تصغير المشغل"><i class="fas fa-compress-alt"></i></button>
+    </div>
 
-        <div class="controls">
-            <div class="station-controls">
-                <button id="prevBtn" class="nav-btn"><i class="fas fa-step-forward"></i></button>
+    <div class="radio-device">
+        <div class="interface-panel">
+            
+            <div class="tuner-bar">
+                <div class="frequency-lines">||||||||||||||||||||||||||||||||||||</div>
+                <div class="tuner-marker"></div>
+            </div>
+
+            <div class="radio-screen">
+                <div class="scanlines"></div>
                 
+                <div class="waves-container">
+                    <div class="wave-line wave-1"></div>
+                    <div class="wave-line wave-2"></div>
+                    <div class="wave-line wave-3"></div>
+                </div>
+
+                <div id="clock" class="time-display">00:00</div>
+                
+                <div class="screen-content">
+                    
+                    <div class="frequency-section">
+                        <div class="frequency-number">
+                            <span id="freqValue">101.5</span><small>FM</small>
+                        </div>
+                        <div class="wave-meter">
+                            <div class="meter-bar"></div><div class="meter-bar"></div>
+                            <div class="meter-bar"></div><div class="meter-bar"></div>
+                            <div class="meter-bar"></div>
+                            <div class="meter-text">SIGNAL</div>
+                        </div>
+                    </div>
+
+                    <div class="disc-container">
+                        <div class="vinyl-record">
+                            <div class="vinyl-center"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="station-info">
+                <div class="status-indicator"><span class="dot"></span> مباشر 24/7</div>
+                <h1 id="stationName">Lofi Girl - Study</h1>
+            </div>
+
+            <div class="controls-row">
+                <button id="prevBtn" class="nav-btn"><i class="fas fa-step-forward"></i></button>
                 <button id="playBtn" class="btn"><i class="fas fa-play"></i></button>
                 <button id="pauseBtn" class="btn hidden"><i class="fas fa-pause"></i></button>
-                
                 <button id="nextBtn" class="nav-btn"><i class="fas fa-step-backward"></i></button>
             </div>
             
             <div class="volume-control">
-                <i class="fas fa-volume-up"></i>
+                <i class="fas fa-volume-down"></i>
                 <input type="range" id="volumeSlider" min="0" max="100" value="50">
+                <i class="fas fa-volume-up"></i>
             </div>
         </div>
-
+        
         <div id="player-wrapper"><div id="player"></div></div>
     </div>
 
     <script>
-        // --- إعداد القنوات ---
-        const stations = [
-            { name: "Lofi Girl - Study 📚", id: "jfKfPfyJRdk" },
-            { name: "Synthwave - Gaming 🎮", id: "4xDzrJKXOOY" },
-            { name: "Lofi Sleep - Relax 💤", id: "rUxyKA_-grg" }
-        ];
-        let currentStationIndex = 0; // نبدأ بأول قناة
-
+        const stations = [ { name: "Lofi Girl - Study 📚", id: "jfKfPfyJRdk", freq: "101.5" }, { name: "Synthwave - Gaming 🎮", id: "4xDzrJKXOOY", freq: "98.3" }, { name: "Lofi Sleep - Relax 💤", id: "rUxyKA_-grg", freq: "104.7" } ];
+        let currentStationIndex = 0;
+        const backgrounds = [ 'https://media.giphy.com/media/tXzFpjeqVnE7m/giphy.gif', 'https://i.pinimg.com/originals/79/5c/ab/795cabc4647f73b365e2e6eabd0f34dc.gif', 'https://media.giphy.com/media/U3qYN8S0j3bpK/giphy.gif', 'https://media.giphy.com/media/LDBuYzAwu8L4I/giphy.gif' ];
+        let currentBgIndex = 0;
+        const themes = ['', 'theme-purple', 'theme-orange'];
+        let currentThemeIndex = 0;
         var player;
+        
+        // المتغيرات
+        const radioDevice = document.querySelector('.radio-device');
         const vinylRecord = document.querySelector('.vinyl-record');
         const stationNameEl = document.getElementById('stationName');
-
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('player', {
-                height: '200', width: '200',
-                videoId: stations[currentStationIndex].id, // تشغيل القناة الأولى
-                playerVars: { 'playsinline': 1, 'controls': 0, 'disablekb': 1 },
-                events: { 'onReady': onPlayerReady }
-            });
-        }
-
-        function onPlayerReady(event) {
-            player.setVolume(50);
-        }
-
+        const freqValueEl = document.getElementById('freqValue');
+        const meterBars = document.querySelectorAll('.meter-bar');
         const playBtn = document.getElementById('playBtn');
         const pauseBtn = document.getElementById('pauseBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const prevBtn = document.getElementById('prevBtn');
+        const minimizeBtn = document.getElementById('minimizeBtn');
         const volumeSlider = document.getElementById('volumeSlider');
 
-        // دالة لتغيير المحطة
-        function loadStation(index) {
-            currentStationIndex = index;
-            // التأكد من أن المؤشر لا يخرج عن حدود المصفوفة
-            if (currentStationIndex >= stations.length) currentStationIndex = 0;
-            if (currentStationIndex < 0) currentStationIndex = stations.length - 1;
+        function onYouTubeIframeAPIReady() { player = new YT.Player('player', { height: '200', width: '200', videoId: stations[currentStationIndex].id, playerVars: { 'playsinline': 1, 'controls': 0, 'disablekb': 1 }, events: { 'onReady': onPlayerReady } }); }
+        function onPlayerReady(event) { player.setVolume(50); updateDisplayInfo(); }
 
-            // تغيير الفيديو والاسم
-            player.loadVideoById(stations[currentStationIndex].id);
-            stationNameEl.innerText = stations[currentStationIndex].name;
+        playBtn.addEventListener('click', () => { if(player && player.playVideo) { player.playVideo(); togglePlayState(true); } });
+        pauseBtn.addEventListener('click', () => { if(player && player.pauseVideo) { player.pauseVideo(); togglePlayState(false); } });
+        document.getElementById('nextBtn').addEventListener('click', () => loadStation(currentStationIndex + 1));
+        document.getElementById('prevBtn').addEventListener('click', () => loadStation(currentStationIndex - 1));
+        volumeSlider.addEventListener('input', (e) => { if(player) player.setVolume(e.target.value); });
+        
+        document.getElementById('bgBtn').addEventListener('click', () => { currentBgIndex = (currentBgIndex + 1) % backgrounds.length; document.body.style.backgroundImage = `url('${backgrounds[currentBgIndex]}')`; });
+        document.getElementById('themeBtn').addEventListener('click', () => { if (themes[currentThemeIndex]) document.body.classList.remove(themes[currentThemeIndex]); currentThemeIndex = (currentThemeIndex + 1) % themes.length; if (themes[currentThemeIndex]) document.body.classList.add(themes[currentThemeIndex]); });
 
-            // إذا كان الراديو يعمل، استمر في الدوران
-            if (!playBtn.classList.contains('hidden')) {
-                 // إذا كان متوقفاً، لا تفعل شيئاً، سيعمل عند ضغط زر التشغيل
+        // زر التصغير
+        minimizeBtn.addEventListener('click', () => {
+            radioDevice.classList.toggle('minimized');
+            minimizeBtn.innerHTML = radioDevice.classList.contains('minimized') ? '<i class="fas fa-expand-alt"></i>' : '<i class="fas fa-compress-alt"></i>';
+        });
+
+        function loadStation(index) { currentStationIndex = (index + stations.length) % stations.length; player.loadVideoById(stations[currentStationIndex].id); updateDisplayInfo(); if (playBtn.classList.contains('hidden')) togglePlayState(true); }
+        function updateDisplayInfo() { stationNameEl.innerText = stations[currentStationIndex].name; freqValueEl.innerText = stations[currentStationIndex].freq; }
+        
+        function togglePlayState(isPlaying) {
+            playBtn.classList.toggle('hidden', isPlaying);
+            pauseBtn.classList.toggle('hidden', !isPlaying);
+            
+            if(isPlaying) {
+                radioDevice.classList.add('playing'); // لتشغيل الموجات الخلفية
+                vinylRecord.classList.add('spinning'); // لتشغيل دوران القرص
+                meterBars.forEach(bar => bar.classList.add('active'));
             } else {
-                 // إذا كان يعمل حالياً، تأكد من الدوران
-                 vinylRecord.classList.add('spinning');
+                radioDevice.classList.remove('playing');
+                vinylRecord.classList.remove('spinning');
+                meterBars.forEach(bar => bar.classList.remove('active'));
             }
         }
-
-        playBtn.addEventListener('click', () => {
-            if(player && player.playVideo) {
-                player.playVideo();
-                playBtn.classList.add('hidden');
-                pauseBtn.classList.remove('hidden');
-                vinylRecord.classList.add('spinning');
-            }
-        });
-
-        pauseBtn.addEventListener('click', () => {
-            if(player && player.pauseVideo) {
-                player.pauseVideo();
-                pauseBtn.classList.add('hidden');
-                playBtn.classList.remove('hidden');
-                vinylRecord.classList.remove('spinning');
-            }
-        });
-
-        // زر التالي
-        nextBtn.addEventListener('click', () => {
-            loadStation(currentStationIndex + 1);
-            // تحويل الزر إلى وضع التشغيل تلقائياً عند تغيير القناة
-            playBtn.classList.add('hidden');
-            pauseBtn.classList.remove('hidden');
-            vinylRecord.classList.add('spinning');
-        });
-
-        // زر السابق
-        prevBtn.addEventListener('click', () => {
-            loadStation(currentStationIndex - 1);
-            playBtn.classList.add('hidden');
-            pauseBtn.classList.remove('hidden');
-            vinylRecord.classList.add('spinning');
-        });
-
-        volumeSlider.addEventListener('input', (e) => {
-            if(player) player.setVolume(e.target.value);
-        });
+        function updateClock() { const now = new Date(); let hours = now.getHours(); let minutes = now.getMinutes(); hours = hours < 10 ? '0' + hours : hours; minutes = minutes < 10 ? '0' + minutes : minutes; document.getElementById('clock').innerText = hours + ':' + minutes; } setInterval(updateClock, 1000); updateClock();
     </script>
     <script src="https://www.youtube.com/iframe_api"></script>
 </body>
