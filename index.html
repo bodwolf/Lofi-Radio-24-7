@@ -87,29 +87,18 @@
     </div>
 
     <script>
-        // --- قائمة القنوات الكاملة (17 محطة) ---
-        const stations = [
-            { name: "Lofi Girl - Study 📚", id: "jfKfPfyJRdk", freq: "101.5" },
-            { name: "Synthwave - Gaming 🌌", id: "4xDzrJKXOOY", freq: "100.3" },
-            { name: "Michael Bublé - Christmas 🎄", id: "KsVyr-pfIe0", freq: "95.5" },
-            { name: "Synthwave - Love Songs 💙", id: "WPXlsahEUNU", freq: "102.1" },
-            { name: "Remixx Party 2025 🔥", id: "1hedM7G9oEI", freq: "98.7" },
-            { name: "Retro Gamers - Nostalgia 🎮", id: "WNsOxG0AqjA", freq: "88.5" },
-            { name: "Sunset Radio - EDM ☀️", id: "AYMBwENobVo", freq: "92.3" },
-            { name: "Pop Live 2025 ✨", id: "DaepFNk0jqo", freq: "96.9" },
-            { name: "Deep House - Relax 🌴", id: "Ma5DjZwp_Lg", freq: "104.5" },
-            { name: "Nintendo Lo-Fi 🍄", id: "3Q_S7tTICFY", freq: "99.9" },
-            { name: "Nightcore Christmas ❄️", id: "59K76iHEMCA", freq: "89.1" },
-            { name: "Summer Mix 2025 🍓", id: "o9-Ev-7-zd0", freq: "103.5" },
-            { name: "Cafe Jazz - Warm ☕", id: "iYa9XKxhVEs", freq: "91.1" },
-            { name: "Japan Night Drive 🚗", id: "QcaWiAvr7og", freq: "87.5" },
-            { name: "ChillSynth FM 🌃", id: "UedTcufyrHc", freq: "105.3" },
-            { name: "Feelings Good Mix 🎧", id: "bhS__AonGco", freq: "106.1" },
-            { name: "Deep Feelings - Vibes 🔊", id: "BU0L7qW9Kyc", freq: "107.9" }
-        ];
-
+        const stations = [ { name: "Lofi Girl - Study 📚", id: "jfKfPfyJRdk", freq: "101.5" }, { name: "Synthwave - Gaming 🎮", id: "4xDzrJKXOOY", freq: "98.3" }, { name: "Michael Bublé - Christmas 🎄", id: "KsVyr-pfIe0", freq: "95.5" }, { name: "Synthwave - Love Songs 💙", id: "WPXlsahEUNU", freq: "102.1" }, { name: "Remixx Party 2025 🔥", id: "1hedM7G9oEI", freq: "98.7" }, { name: "Retro Gamers - Nostalgia 🎮", id: "WNsOxG0AqjA", freq: "88.5" }, { name: "Sunset Radio - EDM ☀️", id: "AYMBwENobVo", freq: "92.3" }, { name: "Pop Live 2025 ✨", id: "DaepFNk0jqo", freq: "96.9" }, { name: "Deep House - Relax 🌴", id: "Ma5DjZwp_Lg", freq: "104.5" }, { name: "Nintendo Lo-Fi 🍄", id: "3Q_S7tTICFY", freq: "99.9" }, { name: "Nightcore Christmas ❄️", id: "59K76iHEMCA", freq: "89.1" }, { name: "Summer Mix 2025 🍓", id: "o9-Ev-7-zd0", freq: "103.5" }, { name: "Cafe Jazz - Warm ☕", id: "iYa9XKxhVEs", freq: "91.1" }, { name: "Japan Night Drive 🚗", id: "QcaWiAvr7og", freq: "87.5" }, { name: "ChillSynth FM 🌃", id: "UedTcufyrHc", freq: "105.3" }, { name: "Feelings Good Mix 🎧", id: "bhS__AonGco", freq: "106.1" }, { name: "Deep Feelings - Vibes 🔊", id: "BU0L7qW9Kyc", freq: "107.9" } ];
+        
         let currentStationIndex = 0;
-        const backgrounds = [ 'https://media.giphy.com/media/tXzFpjeqVnE7m/giphy.gif', 'https://i.pinimg.com/originals/37/42/94/3742942e1d424f91234de1b1b8d71b40.gif', 'https://i.pinimg.com/originals/c6/a9/bf/c6a9bf7e601b747afea5cb1a255606c1.gif', 'https://i.pinimg.com/originals/6c/d6/26/6cd626ea6d4e6f9dd0f6e336a29710c4.gif' ];
+        
+        // --- تم تحديث الخلفيات حسب طلبك ---
+        const backgrounds = [ 
+            'https://media.giphy.com/media/tXzFpjeqVnE7m/giphy.gif', 
+            'https://i.pinimg.com/originals/37/42/94/3742942e1d424f91234de1b1b8d71b40.gif', 
+            'https://i.pinimg.com/originals/c6/a9/bf/c6a9bf7e601b747afea5cb1a255606c1.gif', 
+            'https://i.pinimg.com/originals/6c/d6/26/6cd626ea6d4e6f9dd0f6e336a29710c4.gif' 
+        ];
+        
         let currentBgIndex = 0;
         const themes = ['', 'theme-purple', 'theme-orange'];
         let currentThemeIndex = 0;
@@ -145,10 +134,10 @@
             if (weatherEffects[currentWeatherIndex]) weatherOverlay.classList.remove(weatherEffects[currentWeatherIndex]);
             currentWeatherIndex = (currentWeatherIndex + 1) % weatherEffects.length;
             if (weatherEffects[currentWeatherIndex]) weatherOverlay.classList.add(weatherEffects[currentWeatherIndex]);
-            if(currentWeatherIndex === 1) effectBtn.innerHTML = '<i class="fas fa-tv"></i>'; // تشويش
-            else if(currentWeatherIndex === 2) effectBtn.innerHTML = '<i class="fas fa-cloud-rain"></i>'; // مطر
-            else if(currentWeatherIndex === 3) effectBtn.innerHTML = '<i class="fas fa-wind"></i>'; // موجات
-            else effectBtn.innerHTML = '<i class="fas fa-magic"></i>'; // عادي
+            if(currentWeatherIndex === 1) effectBtn.innerHTML = '<i class="fas fa-tv"></i>';
+            else if(currentWeatherIndex === 2) effectBtn.innerHTML = '<i class="fas fa-cloud-rain"></i>';
+            else if(currentWeatherIndex === 3) effectBtn.innerHTML = '<i class="fas fa-wind"></i>';
+            else effectBtn.innerHTML = '<i class="fas fa-magic"></i>';
         });
 
         minimizeBtn.addEventListener('click', () => {
