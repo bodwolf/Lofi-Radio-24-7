@@ -3,7 +3,6 @@
 body.theme-purple { --main-glow: 189, 52, 235; --secondary-glow: 235, 52, 217; --accent-color: #bd34eb; }
 body.theme-orange { --main-glow: 255, 100, 50; --secondary-glow: 255, 165, 0; --accent-color: #ff6432; }
 
-/* إعدادات الصفحة */
 body {
     margin: 0; padding: 0; height: 100vh;
     display: flex; justify-content: center; align-items: center;
@@ -15,50 +14,85 @@ body {
 body::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: -1; }
 body::after { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url("https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif"); opacity: 0.04; pointer-events: none; z-index: 5; }
 
-/* --- الراديو العريض --- */
+/* تأثيرات الطقس */
+.weather-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; opacity: 0; transition: opacity 1s; background-size: cover; mix-blend-mode: screen; }
+.weather-overlay.effect-rain { opacity: 0.4; background-image: url('https://media.giphy.com/media/t7Qb8655Z1nqingWGw/giphy.gif'); }
+.weather-overlay.effect-waves { opacity: 0.3; background-image: url('https://media.giphy.com/media/3o7rc0qU6m5bcMCGWQ/giphy.gif'); }
+.weather-overlay.effect-noise { opacity: 0.08; background-image: url("https://media.giphy.com/media/oEI9uBYSzLpBK/giphy.gif"); mix-blend-mode: overlay; }
+
+/* الراديو */
 .radio-device {
     width: 480px; max-width: 95%;
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(25px) saturate(180%); -webkit-backdrop-filter: blur(25px) saturate(180%);
     border-radius: 30px;
     border: 2px solid rgba(var(--main-glow), 0.3);
-    box-shadow: 0 0 30px rgba(var(--main-glow), 0.2), 0 0 60px rgba(var(--secondary-glow), 0.1);
+    box-shadow: 0 0 30px rgba(var(--main-glow), 0.3), 0 0 60px rgba(var(--secondary-glow), 0.2), 0 0 90px rgba(var(--main-glow), 0.1);
     padding: 30px; text-align: center;
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative; z-index: 20;
+    position: relative; z-index: 20; overflow: hidden;
 }
-.radio-device:hover { transform: translateY(-5px); box-shadow: 0 0 40px rgba(var(--main-glow), 0.3), 0 0 80px rgba(var(--secondary-glow), 0.2); border-color: rgba(var(--main-glow), 0.5); }
+.radio-device:hover { transform: translateY(-5px); box-shadow: 0 0 40px rgba(var(--main-glow), 0.4), 0 0 80px rgba(var(--secondary-glow), 0.3); border-color: rgba(var(--main-glow), 0.5); }
+.radio-device::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 40%, transparent 60%, rgba(255,255,255,0.05) 100%); pointer-events: none; z-index: 21; mix-blend-mode: overlay; }
 
-/* الواجهة */
-.interface-panel { display: flex; flex-direction: column; align-items: center; gap: 20px; width: 100%; }
+.interface-panel { display: flex; flex-direction: column; align-items: center; gap: 15px; width: 100%; position: relative; z-index: 22; }
+
+/* --- العناوين (Header) --- */
+.station-header { width: 100%; margin-bottom: 5px; }
+.title-wrapper { display: flex; align-items: center; justify-content: center; gap: 12px; }
+
+/* العنوان الرئيسي (ساطع) */
+.main-title {
+    margin: 0; font-size: 1.6rem; font-weight: 800; color: #fff;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(255,255,255,0.6), 0 0 20px rgba(var(--main-glow), 0.4);
+}
+
+/* مؤشر المباشر */
+.status-indicator.neon-red {
+    background: rgba(255, 0, 0, 0.15); color: #ff4d4d;
+    padding: 2px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold;
+    display: inline-flex; align-items: center; gap: 5px;
+    box-shadow: 0 0 8px rgba(255, 77, 77, 0.4);
+    border: 1px solid rgba(255, 77, 77, 0.3);
+}
+.dot { height: 6px; width: 6px; background-color: #ff4d4d; border-radius: 50%; display: inline-block; box-shadow: 0 0 5px #ff4d4d; }
+
+/* اسم المحطة الفرعي (تحت الشاشة) */
+.sub-station-name {
+    margin: 0; font-size: 1rem; color: var(--accent-color); margin-top: 5px; font-weight: bold; opacity: 0.9;
+    text-shadow: 0 0 10px rgba(var(--main-glow), 0.5);
+}
+
+/* مسطرة الترددات */
 .tuner-bar { width: 100%; height: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: center; align-items: flex-end; position: relative; }
 .frequency-lines { font-family: monospace; letter-spacing: 3px; color: rgba(255,255,255,0.3); font-size: 0.8rem; }
 .tuner-marker { position: absolute; bottom: 0; left: 50%; width: 2px; height: 15px; background: var(--accent-color); box-shadow: 0 0 10px var(--accent-color); }
 
-/* --- الشاشة --- */
+/* الشاشة */
 .radio-screen {
     width: 100%; height: 180px;
     background: rgba(10, 10, 15, 0.85); border-radius: 15px; padding: 15px;
     border: 1px solid rgba(var(--main-glow), 0.2); box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
     position: relative; overflow: hidden;
     display: flex; flex-direction: column; justify-content: center;
+    animation: subtleGlitch 8s infinite;
 }
+@keyframes subtleGlitch { 0%, 90%, 100% { transform: translate(0, 0); filter: none; } 91% { transform: translate(-1px, 0.5px); } 91.5% { transform: translate(1px, -0.5px); filter: hue-rotate(5deg); } 92% { transform: translate(0, 0); } }
+
 .scanlines { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.2) 50%); background-size: 100% 4px; z-index: 2; pointer-events: none; }
-.time-display { position: absolute; top: 10px; right: 15px; font-family: 'Orbitron', sans-serif; font-size: 0.8rem; color: rgba(255,255,255,0.7); background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 4px; z-index: 3; border: 1px solid rgba(255,255,255,0.1); }
 
-/* --- الموجات الخلفية (Waves) --- */
-.waves-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 60%; z-index: 1; opacity: 0.3; pointer-events: none; transition: opacity 0.5s; }
-.wave-line { position: absolute; width: 200%; height: 100%; background: var(--accent-color); -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none"><path d="M0,50 C150,100 350,0 500,50 C650,100 850,0 1000,50 L1000,100 L0,100 Z" fill="black"/></svg>'); mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none"><path d="M0,50 C150,100 350,0 500,50 C650,100 850,0 1000,50 L1000,100 L0,100 Z" fill="black"/></svg>'); -webkit-mask-size: 50% 100%; mask-size: 50% 100%; }
-.wave-1 { animation: moveWave 8s linear infinite; opacity: 0.5; bottom: 0; }
-.wave-2 { animation: moveWave 12s linear infinite reverse; opacity: 0.3; height: 80%; bottom: 10%; }
-.wave-3 { animation: moveWave 15s linear infinite; opacity: 0.2; height: 60%; bottom: 20%; }
-.radio-device:not(.playing) .wave-line { animation-play-state: paused; }
-@keyframes moveWave { 0% { -webkit-mask-position: 0 0; mask-position: 0 0; } 100% { -webkit-mask-position: 100% 0; mask-position: 100% 0; } }
+/* الساعة */
+.top-right-info { position: absolute; top: 10px; right: 15px; z-index: 5; }
+.time-display {
+    font-family: 'Orbitron', sans-serif; font-size: 0.85rem; color: rgba(255,255,255,0.9);
+    background: rgba(0, 0, 0, 0.6); padding: 3px 8px; border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1); box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    text-shadow: 0 0 5px rgba(255,255,255,0.5);
+}
 
-/* --- محتوى الشاشة --- */
-.screen-content { display: flex; align-items: center; justify-content: space-around; width: 100%; height: 100%; z-index: 3; padding-top: 10px; }
-
-/* قسم التردد */
+/* محتوى الشاشة */
+.screen-content { display: flex; align-items: center; justify-content: space-around; width: 100%; height: 100%; z-index: 3; padding-top: 15px; }
 .frequency-number { font-family: 'Orbitron', sans-serif; font-size: 3rem; color: var(--accent-color); text-shadow: 0 0 15px var(--accent-color); }
 .frequency-number small { font-size: 1rem; margin-right: 5px; opacity: 0.8; }
 .wave-meter { display: flex; justify-content: center; align-items: flex-end; gap: 3px; height: 15px; margin-top: 10px; }
@@ -66,40 +100,35 @@ body::after { content: ""; position: absolute; top: 0; left: 0; width: 100%; hei
 .meter-bar.active { animation: bounce 0.5s infinite alternate; opacity: 0.8; box-shadow: 0 0 5px var(--accent-color); }
 .meter-text { display: none; }
 
-/* --- القرص الزجاجي الشفاف (متناسق مع الحاوية) --- */
-.disc-container { 
-    width: 140px; height: 140px; 
-    display: flex; justify-content: center; align-items: center; 
-}
+/* القرص الزجاجي */
+.disc-container { width: 140px; height: 140px; display: flex; justify-content: center; align-items: center; }
 .vinyl-record {
-    width: 100%; height: 100%; /* حجم كامل */
-    background: rgba(255, 255, 255, 0.05); /* زجاجي */
-    backdrop-filter: blur(5px);
-    border-radius: 50%;
-    border: 2px solid rgba(var(--accent-color), 0.5);
-    box-shadow: 0 0 20px rgba(var(--accent-color), 0.2), inset 0 0 20px rgba(var(--accent-color), 0.1);
-    display: flex; justify-content: center; align-items: center;
-    position: relative;
+    width: 100%; height: 100%; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(5px); border-radius: 50%;
+    border: 2px solid rgba(var(--accent-color), 0.5); box-shadow: 0 0 20px rgba(var(--accent-color), 0.2), inset 0 0 20px rgba(var(--accent-color), 0.1);
+    display: flex; justify-content: center; align-items: center; position: relative;
     background-image: repeating-radial-gradient(rgba(255,255,255,0.05) 0, rgba(255,255,255,0.05) 2px, transparent 3px, transparent 5px);
+    overflow: hidden;
 }
-.vinyl-center { 
-    width: 35%; height: 35%; /* نسبة مئوية للحفاظ على التناسق */
-    background: url('https://media.giphy.com/media/u3T7c4G8SbkpcRrqJp/giphy.gif'); 
-    background-size: cover; border-radius: 50%; border: 2px solid rgba(var(--accent-color), 0.8); 
-    box-shadow: 0 0 10px rgba(var(--accent-color), 0.5); z-index: 2; 
-}
+.vinyl-record::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: linear-gradient(to bottom right, transparent 40%, rgba(255, 255, 255, 0.15) 45%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0.15) 55%, transparent 60%); transform: rotate(30deg); pointer-events: none; }
+.vinyl-center { width: 35%; height: 35%; background: url('https://media.giphy.com/media/u3T7c4G8SbkpcRrqJp/giphy.gif'); background-size: cover; border-radius: 50%; border: 2px solid rgba(var(--accent-color), 0.8); box-shadow: 0 0 10px rgba(var(--accent-color), 0.5); z-index: 2; }
 .vinyl-record.spinning { animation: spin 4s linear infinite; }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
-/* --- المعلومات والأزرار --- */
-.station-info { text-align: center; width: 100%; }
-.status-indicator { background: rgba(255, 0, 0, 0.2); color: #ff4d4d; padding: 2px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: bold; display: inline-block; margin-bottom: 5px; }
-.dot { height: 6px; width: 6px; background-color: #ff4d4d; border-radius: 50%; display: inline-block; margin-left: 5px; }
-h1 { margin: 0; font-size: 1.3rem; color: var(--accent-color); text-shadow: 0 0 10px rgba(var(--main-glow), 0.5); white-space: nowrap; }
+/* الموجات */
+.waves-container { position: absolute; bottom: 0; left: 0; width: 100%; height: 60%; z-index: 1; opacity: 0.4; pointer-events: none; transition: opacity 0.5s; }
+.wave-line { position: absolute; width: 200%; height: 100%; background: var(--accent-color); -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none"><path d="M0,50 C150,100 350,0 500,50 C650,100 850,0 1000,50 L1000,100 L0,100 Z" fill="black"/></svg>'); mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" preserveAspectRatio="none"><path d="M0,50 C150,100 350,0 500,50 C650,100 850,0 1000,50 L1000,100 L0,100 Z" fill="black"/></svg>'); -webkit-mask-size: 50% 100%; mask-size: 50% 100%; filter: drop-shadow(0 0 5px var(--accent-color)); }
+.wave-1 { animation: moveWave 8s linear infinite; opacity: 0.6; bottom: 0; }
+.wave-2 { animation: moveWave 12s linear infinite reverse; opacity: 0.4; height: 80%; bottom: 10%; }
+.wave-3 { animation: moveWave 15s linear infinite; opacity: 0.3; height: 60%; bottom: 20%; }
+.radio-device:not(.playing) .wave-line { animation-play-state: paused; }
+@keyframes moveWave { 0% { -webkit-mask-position: 0 0; mask-position: 0 0; } 100% { -webkit-mask-position: 100% 0; mask-position: 100% 0; } }
 
 .controls-row { display: flex; align-items: center; gap: 20px; transition: 0.3s; }
 .btn { width: 60px; height: 60px; border-radius: 50%; background: white; color: #333; border: none; font-size: 1.4rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; box-shadow: 0 0 15px rgba(255,255,255,0.3); }
 .btn:hover { transform: scale(1.1); color: var(--accent-color); box-shadow: 0 0 25px rgba(var(--main-glow), 0.6); }
+.btn.neon-pulse { animation: neonBtnPulse 3s infinite alternate; }
+@keyframes neonBtnPulse { from { box-shadow: 0 0 15px rgba(255,255,255,0.3), 0 0 5px rgba(var(--accent-color), 0.2); } to { box-shadow: 0 0 20px rgba(255,255,255,0.5), 0 0 25px rgba(var(--accent-color), 0.6); } }
+
 .nav-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
 .nav-btn:hover { background: white; color: var(--accent-color); box-shadow: 0 0 10px rgba(255,255,255,0.4); }
 .hidden { display: none; }
@@ -117,18 +146,22 @@ h1 { margin: 0; font-size: 1.3rem; color: var(--accent-color); text-shadow: 0 0 
     width: 90%; max-width: 600px; height: 80px; padding: 10px 20px;
     flex-direction: row; align-items: center; justify-content: space-between;
     background: rgba(0, 0, 0, 0.85); border-radius: 50px;
+    box-shadow: 0 0 20px rgba(var(--main-glow), 0.3);
 }
-.radio-device.minimized .radio-screen, .radio-device.minimized .tuner-bar, .radio-device.minimized .volume-control, .radio-device.minimized .station-info .status-indicator { display: none; }
-.radio-device.minimized .station-info h1 { font-size: 1rem; margin: 0; text-align: right; }
+.radio-device.minimized::before { display: none; }
+.radio-device.minimized .radio-screen, .radio-device.minimized .tuner-bar, .radio-device.minimized .volume-control, .radio-device.minimized .station-header, .radio-device.minimized .station-info { display: none; }
+/* إظهار اسم بسيط عند التصغير */
+.radio-device.minimized::after { content: "bod Radio Station"; color: white; font-weight: bold; font-size: 1.1rem; }
 .radio-device.minimized .controls-row { margin: 0; gap: 10px; }
 .radio-device.minimized .btn { width: 45px; height: 45px; font-size: 1.1rem; }
+.radio-device.minimized .btn.neon-pulse { animation: none; box-shadow: none; }
 .radio-device.minimized .nav-btn { width: 35px; height: 35px; }
 
 @media (max-width: 500px) {
     .radio-device { width: 90%; margin-top: 40px; padding: 20px; }
     .screen-content { flex-direction: column-reverse; gap: 10px; }
-    .frequency-number { font-size: 2.5rem; }
-    .radio-screen { height: 200px; }
+    .frequency-number { font-size: 2.2rem; }
+    .radio-screen { height: 220px; }
     .controls-row { gap: 10px; }
     .btn { width: 50px; height: 50px; font-size: 1.2rem; }
     .top-controls { top: 10px; right: 10px; }

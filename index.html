@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ultimate Lofi Radio 📻</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
@@ -14,13 +14,23 @@
 
     <div class="top-controls">
         <button id="bgBtn" class="nav-btn" title="تغيير الخلفية"><i class="fas fa-image"></i></button>
+        <button id="effectBtn" class="nav-btn" title="تأثيرات الجو"><i class="fas fa-magic"></i></button>
         <button id="themeBtn" class="nav-btn" title="تغيير السمات"><i class="fas fa-palette"></i></button>
         <button id="minimizeBtn" class="nav-btn" title="تصغير المشغل"><i class="fas fa-compress-alt"></i></button>
     </div>
 
+    <div id="weatherOverlay" class="weather-overlay"></div>
+
     <div class="radio-device">
         <div class="interface-panel">
             
+            <div class="station-header">
+                <div class="title-wrapper">
+                    <h1 class="main-title">bod Radio Station</h1>
+                    <div class="status-indicator neon-red"><span class="dot"></span> مباشر 24/7</div>
+                </div>
+            </div>
+
             <div class="tuner-bar">
                 <div class="frequency-lines">||||||||||||||||||||||||||||||||||||</div>
                 <div class="tuner-marker"></div>
@@ -28,25 +38,22 @@
 
             <div class="radio-screen">
                 <div class="scanlines"></div>
-                
+                <div class="top-right-info">
+                    <div id="clock" class="time-display">00:00</div>
+                </div>
                 <div class="waves-container">
                     <div class="wave-line wave-1"></div>
                     <div class="wave-line wave-2"></div>
                     <div class="wave-line wave-3"></div>
                 </div>
 
-                <div id="clock" class="time-display">00:00</div>
-                
                 <div class="screen-content">
-                    
                     <div class="frequency-section">
                         <div class="frequency-number">
                             <span id="freqValue">101.5</span><small>FM</small>
                         </div>
                         <div class="wave-meter">
-                            <div class="meter-bar"></div><div class="meter-bar"></div>
-                            <div class="meter-bar"></div><div class="meter-bar"></div>
-                            <div class="meter-bar"></div>
+                            <div class="meter-bar"></div><div class="meter-bar"></div><div class="meter-bar"></div><div class="meter-bar"></div><div class="meter-bar"></div>
                             <div class="meter-text">SIGNAL</div>
                         </div>
                     </div>
@@ -60,14 +67,13 @@
             </div>
 
             <div class="station-info">
-                <div class="status-indicator"><span class="dot"></span> مباشر 24/7</div>
-                <h1 id="stationName">Lofi Girl - Study</h1>
+                <h2 id="stationName" class="sub-station-name">Lofi Girl - Study</h2>
             </div>
 
             <div class="controls-row">
                 <button id="prevBtn" class="nav-btn"><i class="fas fa-step-forward"></i></button>
-                <button id="playBtn" class="btn"><i class="fas fa-play"></i></button>
-                <button id="pauseBtn" class="btn hidden"><i class="fas fa-pause"></i></button>
+                <button id="playBtn" class="btn neon-pulse"><i class="fas fa-play"></i></button>
+                <button id="pauseBtn" class="btn hidden neon-pulse"><i class="fas fa-pause"></i></button>
                 <button id="nextBtn" class="nav-btn"><i class="fas fa-step-backward"></i></button>
             </div>
             
@@ -77,20 +83,40 @@
                 <i class="fas fa-volume-up"></i>
             </div>
         </div>
-        
         <div id="player-wrapper"><div id="player"></div></div>
     </div>
 
     <script>
-        const stations = [ { name: "Lofi Girl - Study 📚", id: "jfKfPfyJRdk", freq: "101.5" }, { name: "Synthwave - Gaming 🎮", id: "4xDzrJKXOOY", freq: "98.3" }, { name: "Lofi Sleep - Relax 💤", id: "rUxyKA_-grg", freq: "104.7" } ];
+        // --- قائمة القنوات الكاملة (17 محطة) ---
+        const stations = [
+            { name: "Lofi Girl - Study 📚", id: "jfKfPfyJRdk", freq: "101.5" },
+            { name: "Synthwave - Gaming 🌌", id: "4xDzrJKXOOY", freq: "100.3" },
+            { name: "Michael Bublé - Christmas 🎄", id: "KsVyr-pfIe0", freq: "95.5" },
+            { name: "Synthwave - Love Songs 💙", id: "WPXlsahEUNU", freq: "102.1" },
+            { name: "Remixx Party 2025 🔥", id: "1hedM7G9oEI", freq: "98.7" },
+            { name: "Retro Gamers - Nostalgia 🎮", id: "WNsOxG0AqjA", freq: "88.5" },
+            { name: "Sunset Radio - EDM ☀️", id: "AYMBwENobVo", freq: "92.3" },
+            { name: "Pop Live 2025 ✨", id: "DaepFNk0jqo", freq: "96.9" },
+            { name: "Deep House - Relax 🌴", id: "Ma5DjZwp_Lg", freq: "104.5" },
+            { name: "Nintendo Lo-Fi 🍄", id: "3Q_S7tTICFY", freq: "99.9" },
+            { name: "Nightcore Christmas ❄️", id: "59K76iHEMCA", freq: "89.1" },
+            { name: "Summer Mix 2025 🍓", id: "o9-Ev-7-zd0", freq: "103.5" },
+            { name: "Cafe Jazz - Warm ☕", id: "iYa9XKxhVEs", freq: "91.1" },
+            { name: "Japan Night Drive 🚗", id: "QcaWiAvr7og", freq: "87.5" },
+            { name: "ChillSynth FM 🌃", id: "UedTcufyrHc", freq: "105.3" },
+            { name: "Feelings Good Mix 🎧", id: "bhS__AonGco", freq: "106.1" },
+            { name: "Deep Feelings - Vibes 🔊", id: "BU0L7qW9Kyc", freq: "107.9" }
+        ];
+
         let currentStationIndex = 0;
         const backgrounds = [ 'https://media.giphy.com/media/tXzFpjeqVnE7m/giphy.gif', 'https://i.pinimg.com/originals/79/5c/ab/795cabc4647f73b365e2e6eabd0f34dc.gif', 'https://media.giphy.com/media/U3qYN8S0j3bpK/giphy.gif', 'https://media.giphy.com/media/LDBuYzAwu8L4I/giphy.gif' ];
         let currentBgIndex = 0;
         const themes = ['', 'theme-purple', 'theme-orange'];
         let currentThemeIndex = 0;
+        const weatherEffects = ['', 'effect-noise', 'effect-rain', 'effect-waves'];
+        let currentWeatherIndex = 0;
+
         var player;
-        
-        // المتغيرات
         const radioDevice = document.querySelector('.radio-device');
         const vinylRecord = document.querySelector('.vinyl-record');
         const stationNameEl = document.getElementById('stationName');
@@ -100,6 +126,8 @@
         const pauseBtn = document.getElementById('pauseBtn');
         const minimizeBtn = document.getElementById('minimizeBtn');
         const volumeSlider = document.getElementById('volumeSlider');
+        const effectBtn = document.getElementById('effectBtn');
+        const weatherOverlay = document.getElementById('weatherOverlay');
 
         function onYouTubeIframeAPIReady() { player = new YT.Player('player', { height: '200', width: '200', videoId: stations[currentStationIndex].id, playerVars: { 'playsinline': 1, 'controls': 0, 'disablekb': 1 }, events: { 'onReady': onPlayerReady } }); }
         function onPlayerReady(event) { player.setVolume(50); updateDisplayInfo(); }
@@ -113,7 +141,16 @@
         document.getElementById('bgBtn').addEventListener('click', () => { currentBgIndex = (currentBgIndex + 1) % backgrounds.length; document.body.style.backgroundImage = `url('${backgrounds[currentBgIndex]}')`; });
         document.getElementById('themeBtn').addEventListener('click', () => { if (themes[currentThemeIndex]) document.body.classList.remove(themes[currentThemeIndex]); currentThemeIndex = (currentThemeIndex + 1) % themes.length; if (themes[currentThemeIndex]) document.body.classList.add(themes[currentThemeIndex]); });
 
-        // زر التصغير
+        effectBtn.addEventListener('click', () => {
+            if (weatherEffects[currentWeatherIndex]) weatherOverlay.classList.remove(weatherEffects[currentWeatherIndex]);
+            currentWeatherIndex = (currentWeatherIndex + 1) % weatherEffects.length;
+            if (weatherEffects[currentWeatherIndex]) weatherOverlay.classList.add(weatherEffects[currentWeatherIndex]);
+            if(currentWeatherIndex === 1) effectBtn.innerHTML = '<i class="fas fa-tv"></i>'; // تشويش
+            else if(currentWeatherIndex === 2) effectBtn.innerHTML = '<i class="fas fa-cloud-rain"></i>'; // مطر
+            else if(currentWeatherIndex === 3) effectBtn.innerHTML = '<i class="fas fa-wind"></i>'; // موجات
+            else effectBtn.innerHTML = '<i class="fas fa-magic"></i>'; // عادي
+        });
+
         minimizeBtn.addEventListener('click', () => {
             radioDevice.classList.toggle('minimized');
             minimizeBtn.innerHTML = radioDevice.classList.contains('minimized') ? '<i class="fas fa-expand-alt"></i>' : '<i class="fas fa-compress-alt"></i>';
@@ -123,18 +160,9 @@
         function updateDisplayInfo() { stationNameEl.innerText = stations[currentStationIndex].name; freqValueEl.innerText = stations[currentStationIndex].freq; }
         
         function togglePlayState(isPlaying) {
-            playBtn.classList.toggle('hidden', isPlaying);
-            pauseBtn.classList.toggle('hidden', !isPlaying);
-            
-            if(isPlaying) {
-                radioDevice.classList.add('playing'); // لتشغيل الموجات الخلفية
-                vinylRecord.classList.add('spinning'); // لتشغيل دوران القرص
-                meterBars.forEach(bar => bar.classList.add('active'));
-            } else {
-                radioDevice.classList.remove('playing');
-                vinylRecord.classList.remove('spinning');
-                meterBars.forEach(bar => bar.classList.remove('active'));
-            }
+            playBtn.classList.toggle('hidden', isPlaying); pauseBtn.classList.toggle('hidden', !isPlaying);
+            if(isPlaying) { radioDevice.classList.add('playing'); vinylRecord.classList.add('spinning'); meterBars.forEach(bar => bar.classList.add('active')); } 
+            else { radioDevice.classList.remove('playing'); vinylRecord.classList.remove('spinning'); meterBars.forEach(bar => bar.classList.remove('active')); }
         }
         function updateClock() { const now = new Date(); let hours = now.getHours(); let minutes = now.getMinutes(); hours = hours < 10 ? '0' + hours : hours; minutes = minutes < 10 ? '0' + minutes : minutes; document.getElementById('clock').innerText = hours + ':' + minutes; } setInterval(updateClock, 1000); updateClock();
     </script>
