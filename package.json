@@ -1,0 +1,11 @@
+{
+    "name": "bodwolf-radio",
+    "version": "16.4.0",
+    "private": true,
+    "description": "Static cinematic Lo-Fi radio dashboard with YouTube playback, temporary community channels, anonymous chat, and Studio Panel foundation.",
+    "scripts": {
+        "check": "node --check app.js && node --check firebase.js && node --check playlist.js && node --check chat.js && node --check admin.js && node --check scripts/create-firebase-config.js",
+        "build": "node scripts/create-firebase-config.js",
+        "start": "python -m http.server 4173"
+    }
+}

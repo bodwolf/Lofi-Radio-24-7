@@ -1,0 +1,11 @@
+firebase-config.js
+.codex-pet-runs/
+.vs/
+node_modules/
+dist/
+build/
+.env
+.env.local
+.env.production
+*.log
+.DS_Store

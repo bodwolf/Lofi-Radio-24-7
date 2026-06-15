@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renner Studio Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&family=Orbitron:wght@500;700&family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin.css?v=16">
+</head>
+<body>
+    <main class="studio-shell">
+        <header class="studio-topbar">
+            <div class="studio-brand">
+                <span class="studio-mark" aria-hidden="true">RR</span>
+                <div>
+                    <p>RENNER RADIO</p>
+                    <h1>Renner Studio Panel</h1>
+                    <span>PRIVATE STATION CONTROLS</span>
+                </div>
+            </div>
+            <a class="public-link" href="index.html">Public Dashboard</a>
+        </header>
+
+        <section class="studio-card admin-status-card" aria-labelledby="adminStatusTitle">
+            <div class="section-heading">
+                <div>
+                    <p>ADMIN STATUS</p>
+                    <h2 id="adminStatusTitle">Google access gate</h2>
+                </div>
+                <span id="adminAccessPill" class="access-pill">Checking Firebase</span>
+            </div>
+
+            <div class="auth-actions">
+                <button id="adminGoogleSignInButton" class="primary-action" type="button">
+                    <i class="fab fa-google"></i>
+                    <span>Sign in with Google</span>
+                </button>
+                <button id="adminGoogleRedirectButton" class="secondary-action hidden" type="button">
+                    <i class="fab fa-google"></i>
+                    <span>Use redirect sign-in</span>
+                </button>
+                <button id="signOutBtn" class="secondary-action hidden" type="button">
+                    <i class="fas fa-right-from-bracket"></i>
+                    <span>Sign out</span>
+                </button>
+            </div>
+
+            <dl class="admin-details">
+                <div>
+                    <dt>Email</dt>
+                    <dd id="adminEmail">Not signed in</dd>
+                </div>
+                <div>
+                    <dt>UID</dt>
+                    <dd id="adminUid">Waiting for Google sign-in</dd>
+                </div>
+                <div>
+                    <dt>Admin state</dt>
+                    <dd id="adminState">Checking...</dd>
+                </div>
+            </dl>
+
+            <p id="adminMessage" class="studio-message" aria-live="polite"></p>
+        </section>
+
+        <section id="studioTools" class="studio-tools hidden" aria-label="Studio Panel tools">
+            <section class="studio-card station-manager" aria-labelledby="stationManagerTitle">
+                <div class="section-heading">
+                    <div>
+                        <p>STATION MANAGER</p>
+                        <h2 id="stationManagerTitle">Admin Stations</h2>
+                        <span id="stationEditingLabel" class="editing-label">Creating new station</span>
+                    </div>
+                    <div class="section-actions">
+                        <button id="importDefaultStationsBtn" class="secondary-action" type="button">Import Default Stations</button>
+                        <span class="access-pill">/adminStations</span>
+                    </div>
+                </div>
+
+                <form id="stationForm" class="studio-form" novalidate>
+                    <input id="stationIdInput" type="hidden">
+
+                    <label>
+                        <span>Station name</span>
+                        <input id="stationNameInput" type="text" autocomplete="off" required placeholder="Night Drive FM">
+                    </label>
+
+                    <label>
+                        <span>Frequency</span>
+                        <div class="field-with-action">
+                            <input id="stationFrequencyInput" type="text" autocomplete="off" required readonly placeholder="101.7">
+                            <button id="generateFrequencyBtn" class="secondary-action" type="button">Generate</button>
+                        </div>
+                    </label>
+
+                    <label>
+                        <span>Category or mood</span>
+                        <select id="stationCategoryInput" required></select>
+                    </label>
+
+                    <label>
+                        <span>YouTube URL or video ID</span>
+                        <input id="stationYoutubeInput" type="text" autocomplete="off" required placeholder="https://youtu.be/VIDEO_ID">
+                    </label>
+
+                    <label>
+                        <span>Thumbnail URL</span>
+                        <input id="stationThumbnailInput" type="url" inputmode="url" autocomplete="off" placeholder="Studio Panel media hook">
+                    </label>
+
+                    <label>
+                        <span>Background video URL</span>
+                        <input id="stationBackgroundVideoInput" type="url" inputmode="url" autocomplete="off" placeholder="Future Studio media URL">
+                    </label>
+
+                    <label>
+                        <span>Background GIF URL</span>
+                        <input id="stationBackgroundGifInput" type="url" inputmode="url" autocomplete="off" placeholder="Future Studio GIF URL">
+                    </label>
+
+                    <label>
+                        <span>Background image URL</span>
+                        <input id="stationBackgroundImageInput" type="url" inputmode="url" autocomplete="off" placeholder="Future Studio image URL">
+                    </label>
+
+                    <label>
+                        <span>Accent color</span>
+                        <input id="stationAccentColorInput" type="color" value="#4facfe">
+                    </label>
+
+                    <label>
+                        <span>Sort order</span>
+                        <input id="stationSortOrderInput" type="number" inputmode="numeric" min="0" step="1" value="0">
+                    </label>
+
+                    <label class="wide-field">
+                        <span>Description</span>
+                        <textarea id="stationDescriptionInput" rows="3" placeholder="Short mood or station note"></textarea>
+                    </label>
+
+                    <label class="toggle-field">
+                        <input id="stationActiveInput" type="checkbox" checked>
+                        <span>Active station</span>
+                    </label>
+
+                    <div class="form-actions wide-field">
+                        <button id="saveStationBtn" class="primary-action" type="submit">Save Station</button>
+                        <button id="resetStationBtn" class="secondary-action" type="button">Reset Form</button>
+                        <button id="cancelEditBtn" class="secondary-action hidden" type="button">Cancel Edit</button>
+                    </div>
+                </form>
+
+                <p id="stationFormMessage" class="studio-message" aria-live="polite"></p>
+            </section>
+
+            <section class="studio-card station-list-card" aria-labelledby="stationListTitle">
+                <div class="section-heading">
+                    <div>
+                        <p>STATION LIST</p>
+                        <h2 id="stationListTitle">Saved stations</h2>
+                    </div>
+                    <span id="stationCountPill" class="access-pill">0 stations</span>
+                </div>
+
+                <div class="admin-list-controls" aria-label="Station list filters">
+                    <label>
+                        <span>Search</span>
+                        <input id="stationSearchInput" type="search" autocomplete="off" placeholder="Name, frequency, category">
+                    </label>
+                    <label>
+                        <span>Status</span>
+                        <select id="stationStatusFilter">
+                            <option value="active">Active</option>
+                            <option value="disabled">Disabled</option>
+                            <option value="removed">Removed</option>
+                            <option value="all">All</option>
+                        </select>
+                    </label>
+                    <label>
+                        <span>Category</span>
+                        <select id="stationListCategoryFilter"></select>
+                    </label>
+                    <label>
+                        <span>Sort</span>
+                        <select id="stationSortFilter">
+                            <option value="sortOrder">Sort order</option>
+                            <option value="name">Name A-Z</option>
+                            <option value="frequency">Frequency</option>
+                            <option value="updatedAt">Recently updated</option>
+                        </select>
+                    </label>
+                </div>
+                <p id="stationStatusSummary" class="station-status-summary">Active 0 / Disabled 0 / Removed 0</p>
+
+                <p id="stationListEmpty" class="empty-state">No admin stations yet.</p>
+                <ul id="adminStationList" class="admin-station-list" aria-label="Admin station list"></ul>
+            </section>
+
+            <section class="studio-card maintenance-card" aria-labelledby="maintenanceToolsTitle">
+                <div class="section-heading">
+                    <div>
+                        <p>MAINTENANCE TOOLS</p>
+                        <h2 id="maintenanceToolsTitle">Station cleanup</h2>
+                    </div>
+                </div>
+                <div class="maintenance-actions">
+                    <button id="findDuplicatesBtn" class="secondary-action" type="button">Find Duplicates</button>
+                    <button id="markDuplicatesRemovedBtn" class="secondary-action danger-action" type="button" disabled>Mark Duplicates Removed</button>
+                    <button id="recalculateSortOrderBtn" class="secondary-action" type="button">Recalculate Sort Order</button>
+                </div>
+                <p id="maintenanceMessage" class="studio-message" aria-live="polite"></p>
+                <ul id="duplicatePreviewList" class="duplicate-preview-list" aria-label="Duplicate station preview"></ul>
+            </section>
+
+            <section class="studio-card site-settings-card" aria-labelledby="siteSettingsTitle">
+                <div class="section-heading">
+                    <div>
+                        <p>SITE SETTINGS</p>
+                        <h2 id="siteSettingsTitle">Placeholder settings</h2>
+                    </div>
+                    <span class="access-pill">/siteSettings</span>
+                </div>
+
+                <form id="siteSettingsForm" class="studio-form compact-form" novalidate>
+                    <label>
+                        <span>Default station ID</span>
+                        <input id="defaultStationIdInput" type="text" autocomplete="off" placeholder="Future admin station key">
+                    </label>
+
+                    <label>
+                        <span>Default theme</span>
+                        <input id="defaultThemeInput" type="text" autocomplete="off" placeholder="default">
+                    </label>
+
+                    <label class="toggle-field">
+                        <input id="comfortModeDefaultInput" type="checkbox">
+                        <span>Comfort Mode default</span>
+                    </label>
+
+                    <label class="toggle-field">
+                        <input id="staticSoundDefaultInput" type="checkbox">
+                        <span>Static Sound default</span>
+                    </label>
+
+                    <div class="form-actions wide-field">
+                        <button id="saveSiteSettingsBtn" class="primary-action" type="submit">Save Settings</button>
+                    </div>
+                </form>
+
+                <p id="siteSettingsMessage" class="studio-message" aria-live="polite"></p>
+            </section>
+        </section>
+    </main>
+
+    <!-- V16.3: Studio Panel manages the main /adminStations source; stations.js is loaded here as seed data. -->
+    <script src="stations.js?v=15.4"></script>
+    <script type="module" src="admin.js?v=16.3"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+window.BODWOLF_STATIONS = [
+    // Static station catalogue. V15.2 temporary community stations are merged at runtime.
+    { category: "LOFI", freq: "88.1", name: "Retro Gamers", id: "WNsOxG0AqjA" },
+    { category: "LOFI", freq: "88.5", name: "Chillhop Radio", id: "-krocK0V9pI" },
+    { category: "LOFI", freq: "88.9", name: "Lofi Girl Study", id: "jfKfPfyJRdk" },
+    { category: "LOFI", freq: "89.3", name: "Dark Ambient", id: "UiP9GxJYSrc" },
+    { category: "LOFI", freq: "89.7", name: "Synthwave Gaming", id: "4xDzrJKXOOY" },
+    { category: "LOFI", freq: "90.1", name: "Coffee Shop Vibes", id: "jB4rKRzS9to" },
+    { category: "LOFI", freq: "90.5", name: "Rainy Night", id: "bT-2YKuZQHw" },
+    { category: "LOFI", freq: "90.9", name: "Nintendo Lo-Fi", id: "3Q_S7tTICFY" },
+    { category: "LOFI", freq: "91.3", name: "Space Dreams", id: "QkbgyegvgTU" },
+    { category: "LOFI", freq: "91.7", name: "ChillSynth FM", id: "UedTcufyrHc" },
+    { category: "LOFI", freq: "92.1", name: "Focus Study", id: "WGfMj5o4s1k" },
+    { category: "LOFI", freq: "92.5", name: "Midnight Jazz", id: "c8tvCWjQysk" },
+    { category: "LOFI", freq: "92.9", name: "Coding Beats", id: "3QHuVU7NAzs" },
+    { category: "LOFI", freq: "93.3", name: "Sunday Morning", id: "Aew8vpj_RsQ" },
+
+    { category: "SONG", freq: "94.1", name: "Synthwave Love", id: "WPXlsahEUNU" },
+    { category: "SONG", freq: "94.5", name: "Top Hits 2025", id: "3hZu4IUEZd8" },
+    { category: "SONG", freq: "94.9", name: "Nightcore Xmas", id: "59K76iHEMCA" },
+    { category: "SONG", freq: "95.3", name: "Jazz Classics", id: "AYGEiSm29LM" },
+    { category: "SONG", freq: "95.7", name: "Sunset Radio", id: "AYMBwENobVo" },
+    { category: "SONG", freq: "96.1", name: "Eleo Party", id: "36YnV9STBqc" },
+    { category: "SONG", freq: "96.5", name: "Rock Classics", id: "_1IY_q9AXv0" },
+    { category: "SONG", freq: "96.9", name: "Piano Mix", id: "3MOrgUjiigE" },
+    { category: "SONG", freq: "97.3", name: "Pop Live 2025", id: "DaepFNk0jqo" },
+    { category: "SONG", freq: "97.7", name: "Pop Mix", id: "YjpyOfG6iRo" },
+    { category: "SONG", freq: "98.1", name: "Remix Party", id: "1hedM7G9oEI" },
+    { category: "SONG", freq: "98.5", name: "Summer Mix", id: "o9-Ev-7-zd0" },
+    { category: "SONG", freq: "98.9", name: "Acoustic Vibes", id: "-k_LwBgZQQ0" },
+    { category: "SONG", freq: "99.3", name: "Deep House", id: "Ma5DjZwp_Lg" },
+    { category: "SONG", freq: "99.7", name: "Feel Good Radio", id: "bhS__AonGco" },
+    { category: "SONG", freq: "100.1", name: "Sad Songs", id: "obJbLSDsBAY" },
+    { category: "SONG", freq: "100.5", name: "Deep Feelings", id: "BU0L7qW9Kyc" },
+    { category: "SONG", freq: "100.9", name: "DL Music", id: "73gaQ8KUQ3w" },
+
+    { category: "FM", freq: "107.5", name: "Safari FM", id: "PYuuNFg-SFg" }
+];

@@ -1,0 +1,76 @@
+{
+  // /playlistItems is retained for legacy queue records; V15.3 community channels use /temporaryStations.
+  // V11 uses /chatMessages and /userProfiles for anonymous realtime chat.
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "playlistItems": {
+      // Public legacy queue reads stay scoped to active items; the client hides expired items by expiresAt.
+      ".read": "query.orderByChild === 'status' && query.equalTo === 'active'",
+      ".indexOn": ["status", "createdAt", "expiresAt"],
+      "$itemId": {
+        // Anonymous auth can create active legacy queue items. Owners can only mark their own item removed.
+        ".write": "auth != null && newData.exists() && ((!data.exists() && newData.child('addedBy').val() === auth.uid && newData.child('status').val() === 'active') || (data.exists() && data.child('addedBy').val() === auth.uid && data.child('videoId').val() === newData.child('videoId').val() && data.child('url').val() === newData.child('url').val() && data.child('title').val() === newData.child('title').val() && data.child('addedBy').val() === newData.child('addedBy').val() && data.child('displayName').val() === newData.child('displayName').val() && data.child('createdAt').val() === newData.child('createdAt').val() && data.child('expiresAt').val() === newData.child('expiresAt').val() && data.child('status').val() === 'active' && newData.child('status').val() === 'removed'))",
+        ".validate": "newData.hasChildren(['videoId', 'url', 'title', 'addedBy', 'displayName', 'createdAt', 'expiresAt', 'status']) && newData.child('videoId').isString() && newData.child('videoId').val().matches(/^[A-Za-z0-9_-]{11}$/) && newData.child('url').isString() && newData.child('url').val().length <= 300 && newData.child('url').val().matches(/^https:\\/\\/(www\\.)?(youtube\\.com|youtu\\.be)\\//) && newData.child('title').isString() && newData.child('title').val().length > 0 && newData.child('title').val().length <= 120 && newData.child('addedBy').isString() && newData.child('addedBy').val() === auth.uid && newData.child('displayName').isString() && newData.child('displayName').val().matches(/^[A-Za-z][A-Za-z0-9]{3,15}$/) && newData.child('createdAt').isNumber() && newData.child('expiresAt').isNumber() && newData.child('expiresAt').val() > newData.child('createdAt').val() && newData.child('status').isString() && newData.child('status').val().matches(/^(active|removed)$/)"
+      }
+    },
+
+    "temporaryStations": {
+      // V15.3 uses one temporary community channel per owner, with tracks nested under /tracks.
+      ".read": "query.orderByChild === 'status' && query.equalTo === 'active'",
+      ".indexOn": ["status", "createdAt", "expiresAt"],
+      "$stationId": {
+        // Anonymous auth can create community channels. Owners can only mark their own active channel removed.
+        ".write": "auth != null && newData.exists() && ((!data.exists() && newData.child('createdBy').val() === auth.uid && newData.child('status').val() === 'active' && newData.child('type').val() === 'community') || (data.exists() && data.child('createdBy').val() === auth.uid && data.child('name').val() === newData.child('name').val() && data.child('frequency').val() === newData.child('frequency').val() && data.child('createdBy').val() === newData.child('createdBy').val() && data.child('displayName').val() === newData.child('displayName').val() && data.child('createdAt').val() === newData.child('createdAt').val() && data.child('expiresAt').val() === newData.child('expiresAt').val() && data.child('type').val() === newData.child('type').val() && data.child('status').val() === 'active' && newData.child('status').val() === 'removed'))",
+        ".validate": "newData.hasChildren(['name', 'frequency', 'createdBy', 'displayName', 'createdAt', 'expiresAt', 'status', 'type']) && newData.child('name').isString() && newData.child('name').val().length > 0 && newData.child('name').val().length <= 24 && newData.child('name').val().matches(/^[A-Za-z0-9][A-Za-z0-9 -]{0,23}$/) && newData.child('frequency').isString() && newData.child('frequency').val().matches(/^\\d{3}\\.\\d$/) && newData.child('createdBy').isString() && newData.child('createdBy').val() === auth.uid && newData.child('displayName').isString() && newData.child('displayName').val().matches(/^[A-Za-z][A-Za-z0-9]{3,15}$/) && newData.child('createdAt').isNumber() && newData.child('expiresAt').isNumber() && newData.child('expiresAt').val() > newData.child('createdAt').val() && newData.child('status').isString() && newData.child('status').val().matches(/^(active|removed)$/) && newData.child('type').isString() && newData.child('type').val() === 'community' && (!newData.child('accentColor').exists() || (newData.child('accentColor').isString() && newData.child('accentColor').val().matches(/^#[0-9A-Fa-f]{6}$/)))",
+        "tracks": {
+          "$trackId": {
+            // Only the channel owner can add tracks or mark their own tracks removed.
+            ".write": "auth != null && root.child('temporaryStations').child($stationId).child('createdBy').val() === auth.uid && root.child('temporaryStations').child($stationId).child('status').val() === 'active' && newData.exists() && ((!data.exists() && newData.child('status').val() === 'active') || (data.exists() && data.child('videoId').val() === newData.child('videoId').val() && data.child('url').val() === newData.child('url').val() && data.child('title').val() === newData.child('title').val() && data.child('order').val() === newData.child('order').val() && data.child('createdAt').val() === newData.child('createdAt').val() && data.child('status').val() === 'active' && newData.child('status').val() === 'removed'))",
+            ".validate": "newData.hasChildren(['videoId', 'url', 'title', 'order', 'createdAt', 'status']) && newData.child('videoId').isString() && newData.child('videoId').val().matches(/^[A-Za-z0-9_-]{11}$/) && newData.child('url').isString() && newData.child('url').val().length <= 300 && newData.child('url').val().matches(/^https:\\/\\/((www|m)\\.)?(youtube\\.com|youtu\\.be)\\//) && newData.child('title').isString() && newData.child('title').val().length > 0 && newData.child('title').val().length <= 120 && newData.child('order').isNumber() && newData.child('order').val() >= 1 && newData.child('order').val() <= 10 && newData.child('createdAt').isNumber() && newData.child('status').isString() && newData.child('status').val().matches(/^(active|removed)$/)"
+          }
+        }
+      }
+    },
+
+    "adminStations": {
+      // V16.2 Studio Panel records. Public reads let the dashboard use admin stations as the main station list.
+      // V16 Studio admin UID. Keep this aligned with ADMIN_UID in admin.js before deploying rules.
+      ".read": true,
+      ".write": "auth != null && auth.uid === 'k2JfANYX7iWVILK3AeSB3MiO7sv1'",
+      ".indexOn": ["status", "isActive", "sortOrder", "updatedAt"],
+      "$stationId": {
+        ".validate": "!newData.exists() || (newData.hasChildren(['name', 'frequency', 'category', 'youtubeUrl', 'youtubeId', 'thumbnailUrl', 'backgroundVideoUrl', 'backgroundGifUrl', 'backgroundImageUrl', 'accentColor', 'description', 'isActive', 'sortOrder', 'status', 'createdAt', 'updatedAt', 'createdBy', 'updatedBy']) && newData.child('name').isString() && newData.child('name').val().length > 0 && newData.child('name').val().length <= 80 && newData.child('frequency').isString() && newData.child('frequency').val().matches(/^(87\\.[5-9]|8[8-9]\\.[0-9]|9[0-9]\\.[0-9]|10[0-7]\\.[0-9]|108\\.0)$/) && newData.child('category').isString() && newData.child('category').val().matches(/^(LOFI|SYNTHWAVE|CHILLHOP|JAZZHOP|AMBIENT|DEEP HOUSE|HOUSE|RETRO|STUDY|SLEEP|RELAX|RADIO|SONG|CUSTOM)$/) && newData.child('youtubeUrl').isString() && (newData.child('youtubeUrl').val() === '' || (newData.child('youtubeUrl').val().length <= 300 && newData.child('youtubeUrl').val().matches(/^https:\\/\\/((www|m)\\.)?(youtube\\.com|youtu\\.be)\\//))) && newData.child('youtubeId').isString() && (newData.child('youtubeId').val() === '' || newData.child('youtubeId').val().matches(/^[A-Za-z0-9_-]{11}$/)) && (newData.child('status').val() !== 'active' || newData.child('youtubeId').val().matches(/^[A-Za-z0-9_-]{11}$/)) && newData.child('thumbnailUrl').isString() && newData.child('thumbnailUrl').val().length <= 500 && newData.child('backgroundVideoUrl').isString() && newData.child('backgroundVideoUrl').val().length <= 500 && newData.child('backgroundGifUrl').isString() && newData.child('backgroundGifUrl').val().length <= 500 && newData.child('backgroundImageUrl').isString() && newData.child('backgroundImageUrl').val().length <= 500 && newData.child('accentColor').isString() && newData.child('accentColor').val().matches(/^#[0-9A-Fa-f]{6}$/) && newData.child('description').isString() && newData.child('description').val().length <= 280 && newData.child('isActive').isBoolean() && newData.child('sortOrder').isNumber() && newData.child('status').isString() && newData.child('status').val().matches(/^(active|disabled|removed)$/) && newData.child('createdAt').isNumber() && newData.child('updatedAt').isNumber() && newData.child('createdBy').isString() && newData.child('updatedBy').isString() && (!newData.child('source').exists() || (newData.child('source').isString() && newData.child('source').val().matches(/^(seed|admin)$/))) && (!newData.child('removedAt').exists() || newData.child('removedAt').isNumber()) && (!newData.child('removedBy').exists() || newData.child('removedBy').isString()))"
+      }
+    },
+
+    "siteSettings": {
+      // V16 placeholder settings. Public reads are safe; writes are private to the Studio admin UID.
+      ".read": true,
+      ".write": "auth != null && auth.uid === 'k2JfANYX7iWVILK3AeSB3MiO7sv1'",
+      ".validate": "!newData.exists() || (newData.hasChildren(['defaultStationId', 'defaultTheme', 'comfortModeDefault', 'staticSoundDefault', 'updatedAt', 'updatedBy']) && newData.child('defaultStationId').isString() && newData.child('defaultStationId').val().length <= 120 && newData.child('defaultTheme').isString() && newData.child('defaultTheme').val().length <= 40 && newData.child('comfortModeDefault').isBoolean() && newData.child('staticSoundDefault').isBoolean() && newData.child('updatedAt').isNumber() && newData.child('updatedBy').isString())"
+    },
+
+    "chatMessages": {
+      // Chat is publicly readable, but writes require anonymous auth and create-only messages.
+      // V13.1 display names must be English alphanumeric names, 4-16 chars, starting with a letter.
+      ".read": true,
+      ".indexOn": ["createdAt"],
+      "$messageId": {
+        ".write": "auth != null && !data.exists() && newData.exists() && newData.child('uid').val() === auth.uid",
+        ".validate": "newData.hasChildren(['text', 'displayName', 'userColor', 'uid', 'createdAt']) && newData.child('text').isString() && newData.child('text').val().length > 0 && newData.child('text').val().length <= 160 && newData.child('displayName').isString() && newData.child('displayName').val().matches(/^[A-Za-z][A-Za-z0-9]{3,15}$/) && newData.child('userColor').isString() && newData.child('userColor').val().matches(/^#[0-9A-Fa-f]{6}$/) && newData.child('uid').isString() && newData.child('uid').val() === auth.uid && newData.child('createdAt').isNumber()"
+      }
+    },
+
+    "userProfiles": {
+      "$uid": {
+        // Profiles are private to the matching anonymous auth user.
+        // V13.1 custom English names are stored here before chat messages are sent.
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid && newData.exists()",
+        ".validate": "newData.hasChildren(['displayName', 'userColor', 'createdAt', 'updatedAt']) && newData.child('displayName').isString() && newData.child('displayName').val().matches(/^[A-Za-z][A-Za-z0-9]{3,15}$/) && newData.child('userColor').isString() && newData.child('userColor').val().matches(/^#[0-9A-Fa-f]{6}$/) && newData.child('createdAt').isNumber() && newData.child('updatedAt').isNumber()"
+      }
+    }
+  }
+}

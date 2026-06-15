@@ -1,270 +1,359 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bodwolf Radio 📻</title>
+    <title>Renner Radio | Lo-Fi Dashboard</title>
+    <meta name="description" content="Renner Radio is a cyberpunk lo-fi radio dashboard with realtime chat, community channels, and private Studio Panel controls.">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&family=Orbitron:wght@500;700&family=VT323&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-    <style> #player-wrapper { position: absolute; top: -9999px; left: -9999px; opacity: 0; } </style>
+    <link rel="stylesheet" href="style.css?v=16.4">
 </head>
 <body>
+    <div id="weatherOverlay" class="weather-overlay" aria-hidden="true"></div>
+    <div id="tuningOverlay" class="tuning-overlay" aria-hidden="true"></div>
 
-    <div class="top-controls">
-        <button id="bgBtn" class="nav-btn" title="تغيير الخلفية"><i class="fas fa-image"></i></button>
-        <button id="effectBtn" class="nav-btn" title="تأثيرات الجو"><i class="fas fa-magic"></i></button>
-        <button id="themeBtn" class="nav-btn" title="تغيير السمات"><i class="fas fa-palette"></i></button>
-        <button id="minimizeBtn" class="nav-btn" title="تصغير المشغل"><i class="fas fa-compress-alt"></i></button>
-    </div>
-
-    <div id="channelMenu" class="channel-menu hidden-menu">
-        <div class="menu-header">
-            <span>STATION LIST</span>
-            <button id="closeMenu" class="close-btn"><i class="fas fa-times"></i></button>
-        </div>
-        <div id="channelsListContainer" class="channels-grid"></div>
-    </div>
-
-    <div id="weatherOverlay" class="weather-overlay"></div>
-
-    <div class="radio-device">
-        <div class="interface-panel">
-            
-            <div class="station-header">
-                <h1 class="main-title">bod Radio Station </h1>
-                <div class="status-indicator neon-red"><span class="dot"></span> مباشر</div>
-            </div>
-
-            <div class="tuner-bar">
-                <div class="frequency-lines">||||||||||||||||||||||||||||||||||||</div>
-                <div class="tuner-marker"></div>
-            </div>
-
-            <div class="radio-screen">
-                <div class="scanlines"></div>
-                <div class="top-right-info">
-                    <div id="clock" class="time-display">00:00</div>
+    <div class="app-shell dashboard-shell">
+        <header class="dashboard-topbar" aria-label="Renner Radio status">
+            <div class="brand-lockup">
+                <span class="brand-mark" aria-hidden="true">RR</span>
+                <div class="brand-copy">
+                    <p class="eyebrow">RENNER RADIO</p>
+                    <h1>Renner Radio Dashboard</h1>
+                    <p class="brand-subtitle">LOFI / RETRO / LIVE</p>
                 </div>
-                <div class="waves-container">
-                    <div class="wave-line wave-1"></div>
-                    <div class="wave-line wave-2"></div>
-                    <div class="wave-line wave-3"></div>
+            </div>
+            <div class="topbar-actions">
+                <div class="topbar-status">
+                    <span class="status-indicator neon-red"><span class="dot"></span>LIVE</span>
+                    <p id="firebaseStatus" class="firebase-status">Static mode</p>
+                    <span class="listeners-pill"><i class="fas fa-headphones"></i><span>Listeners soon</span></span>
                 </div>
+                <nav class="topbar-nav" aria-label="Dashboard panels">
+                    <button class="panel-toggle" type="button" data-panel-target="channelMenu" title="Stations" aria-label="Stations">
+                        <i class="fas fa-list"></i><span>Stations</span>
+                    </button>
+                    <button class="panel-toggle" type="button" data-panel-target="chatPanel" title="Chat" aria-label="Chat">
+                        <i class="fas fa-comments"></i><span>Chat</span>
+                    </button>
+                    <button class="panel-toggle" type="button" data-panel-target="playlistPanel" title="Channel" aria-label="Channel">
+                        <i class="fab fa-youtube"></i><span>Channel</span>
+                    </button>
+                    <button class="panel-toggle" type="button" data-panel-target="morePanel" title="More" aria-label="More">
+                        <i class="fas fa-sliders-h"></i><span>More</span>
+                    </button>
+                </nav>
+            </div>
+        </header>
 
-                <div class="screen-content">
-                    <div class="frequency-section">
-                        <div class="frequency-number">
-                            <span id="freqValue">88.5</span><small>FM</small>
+        <main class="dashboard-grid" aria-label="Renner Radio dashboard">
+            <aside id="channelMenu" class="channel-menu dashboard-panel station-dock future-panel" aria-label="Station list">
+                <div class="panel-heading station-heading">
+                    <div>
+                        <span>STATIONS</span>
+                        <h2>Station Grid</h2>
+                    </div>
+                    <button id="closeMenu" class="close-btn" type="button" aria-label="Close station list">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <p class="panel-kicker">Choose your favorite station.</p>
+                <div id="channelsListContainer" class="channels-grid"></div>
+            </aside>
+
+            <section class="radio-stage dashboard-hero" aria-label="Radio player">
+                <div class="radio-device">
+                    <div class="hero-orbit" aria-hidden="true"></div>
+                    <div class="interface-panel">
+                        <div class="station-header">
+                            <div>
+                                <p class="eyebrow">NOW TUNED</p>
+                                <h2 class="main-title">Renner Radio Station</h2>
+                            </div>
+                            <div id="clock" class="time-display">00:00</div>
                         </div>
-                        <div class="wave-meter">
-                            <div class="meter-bar"></div><div class="meter-bar"></div><div class="meter-bar"></div><div class="meter-bar"></div><div class="meter-bar"></div>
-                            <div class="meter-text">SIGNAL</div>
+
+                        <div class="radio-screen">
+                            <div class="scanlines"></div>
+                            <div class="waves-container">
+                                <div class="wave-line wave-1"></div>
+                                <div class="wave-line wave-2"></div>
+                                <div class="wave-line wave-3"></div>
+                            </div>
+
+                            <div class="screen-content">
+                                <div class="frequency-section">
+                                    <p class="screen-label">FREQUENCY</p>
+                                    <div class="frequency-number">
+                                        <span id="freqValue">88.5</span><small>FM</small>
+                                    </div>
+                                    <div class="wave-meter" aria-label="Signal">
+                                        <div class="meter-bar"></div>
+                                        <div class="meter-bar"></div>
+                                        <div class="meter-bar"></div>
+                                        <div class="meter-bar"></div>
+                                        <div class="meter-bar"></div>
+                                        <div class="meter-text">SIGNAL</div>
+                                    </div>
+                                </div>
+
+                                <div class="disc-container">
+                                    <div class="vinyl-record">
+                                        <div class="vinyl-center"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="station-info">
+                            <p class="station-label">YOU ARE LISTENING TO</p>
+                            <h3 id="stationName" class="sub-station-name">Loading...</h3>
+                            <p id="stationMeta" class="station-meta">Live station signal</p>
+                            <div class="hero-status-row" aria-label="Signal status">
+                                <span id="heroStatusPill" class="hero-status-pill">STEREO</span>
+                                <span class="hero-asset-pill">Studio media placeholder</span>
+                            </div>
+                            <p id="tuningStatus" class="tuning-status" aria-live="polite"></p>
+                        </div>
+
+                        <div class="hero-visualizer" aria-hidden="true">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
                         </div>
                     </div>
 
-                    <div class="disc-container">
-                        <div class="vinyl-record">
-                            <div class="vinyl-center"></div>
-                        </div>
+                    <div id="player-wrapper">
+                        <div id="player"></div>
                     </div>
                 </div>
+            </section>
+
+            <aside class="social-stack" aria-label="Chat and temporary community channel panels">
+                <section id="chatPanel" class="future-panel dashboard-panel chat-panel" aria-label="Anonymous Chat">
+                    <div class="panel-heading">
+                        <div>
+                            <span>V11 LIVE</span>
+                            <h2>Anonymous Chat</h2>
+                        </div>
+                    </div>
+                    <div class="chat-content">
+                        <p id="chatModeHint" class="chat-mode-hint">Local preview only. Firebase not connected.</p>
+
+                        <div id="chatNameSetup" class="chat-name-setup">
+                            <form id="chatNameForm" class="chat-name-form" novalidate>
+                                <label for="chatNameInput">Radio name</label>
+                                <div class="chat-name-row">
+                                    <input id="chatNameInput" type="text" inputmode="text" autocomplete="nickname" maxlength="16" placeholder="Choose your radio name">
+                                    <button id="chatNameSaveBtn" class="chat-name-save-btn" type="submit">Save</button>
+                                </div>
+                                <p id="chatNameHelper" class="chat-name-helper">English name, minimum 4 letters</p>
+                            </form>
+                        </div>
+
+                        <div class="chat-profile" aria-label="Anonymous chat profile">
+                            <span id="chatColorSwatch" class="chat-color-swatch" aria-hidden="true"></span>
+                            <span id="chatProfileName">Wolf-000</span>
+                            <button id="chatNameEditBtn" class="chat-name-edit-btn" type="button">Edit Name</button>
+                        </div>
+
+                        <p id="chatMessage" class="chat-message" aria-live="polite"></p>
+                        <p id="chatLoading" class="chat-loading hidden">Loading chat...</p>
+                        <p id="chatEmpty" class="chat-empty">No messages yet. Start the radio chat.</p>
+                        <ul id="chatItems" class="chat-items" aria-label="Anonymous chat messages"></ul>
+
+                        <form id="chatForm" class="chat-form" novalidate>
+                            <label for="chatInput">Message</label>
+                            <div class="chat-input-row">
+                                <textarea id="chatInput" rows="2" autocomplete="off" placeholder="Say hi to the station"></textarea>
+                                <button id="chatSendBtn" class="chat-send-btn" type="submit">Send</button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <section id="playlistPanel" class="future-panel dashboard-panel playlist-panel" aria-label="Create Temporary Community Channel">
+                    <div class="panel-heading">
+                        <div>
+                            <span>COMMUNITY FM</span>
+                            <h2>Channel Manager</h2>
+                        </div>
+                    </div>
+                    <div class="playlist-content">
+                        <p id="playlistModeHint" class="playlist-mode-hint">Local preview channel only. Firebase not connected.</p>
+
+                        <form id="playlistForm" class="playlist-form" novalidate>
+                            <label for="playlistUrlInput">YouTube track link</label>
+                            <div class="playlist-input-row">
+                                <input id="playlistUrlInput" type="url" inputmode="url" autocomplete="off" placeholder="https://youtu.be/VIDEO_ID">
+                            </div>
+                            <label for="temporaryStationNameInput">Channel name optional</label>
+                            <div class="playlist-input-row">
+                                <input id="temporaryStationNameInput" type="text" inputmode="text" autocomplete="off" maxlength="24" placeholder="Renner FM">
+                                <button id="playlistAddBtn" class="playlist-add-btn" type="submit">Create Channel</button>
+                            </div>
+                        </form>
+
+                        <p id="playlistMessage" class="playlist-message" aria-live="polite"></p>
+                        <p id="playlistLoading" class="playlist-loading hidden">Syncing temporary channels...</p>
+                        <p id="playlistEmpty" class="playlist-empty">No temporary channel yet. Create one from a YouTube link.</p>
+                        <ul id="playlistItems" class="playlist-items" aria-label="Temporary community radio channels"></ul>
+                    </div>
+                </section>
+            </aside>
+        </main>
+
+        <aside id="morePanel" class="future-panel dashboard-panel more-panel" aria-label="More panel">
+            <div class="panel-heading">
+                <div>
+                    <span>MORE</span>
+                    <h2>Visual Controls</h2>
+                </div>
+            </div>
+            <div class="mobile-more-controls" aria-label="Mobile visual controls">
+                <button class="mobile-proxy-control" type="button" data-proxy-control="themeBtn"><i class="fas fa-palette"></i><span>Theme</span></button>
+                <button class="mobile-proxy-control" type="button" data-proxy-control="bgBtn"><i class="fas fa-image"></i><span>Background</span></button>
+                <button class="mobile-proxy-control" type="button" data-proxy-control="effectBtn"><i class="fas fa-magic"></i><span>Effect</span></button>
+                <button id="mobileStaticSoundBtn" class="mobile-proxy-control" type="button" data-proxy-control="staticSoundBtn"><i class="fas fa-broadcast-tower"></i><span>Static Off</span></button>
+                <button id="mobileComfortModeBtn" class="mobile-proxy-control" type="button" data-proxy-control="comfortModeBtn"><i class="fas fa-eye"></i><span>Comfort Off</span></button>
+                <label class="mobile-volume-control" for="mobileVolumeSlider">
+                    <span>Volume</span>
+                    <input type="range" id="mobileVolumeSlider" min="0" max="100" value="50">
+                </label>
+            </div>
+            <ul class="roadmap-list">
+                <li><strong>V13.1</strong><span>Custom English display names.</span></li>
+                <li><strong>V14</strong><span>Per-station animated background engine.</span></li>
+                <li><strong>V14.1</strong><span>Glitch/static transition and sound layer.</span></li>
+                <li><strong>V15.4</strong><span>Cinematic UI match pass and Studio asset hooks.</span></li>
+                <li><strong>V16</strong><span>Studio Panel controls.</span></li>
+            </ul>
+        </aside>
+
+        <nav class="mobile-nav" aria-label="Mobile dashboard navigation">
+            <button class="panel-toggle" type="button" data-panel-target="channelMenu"><i class="fas fa-list"></i><span>Stations</span></button>
+            <button class="panel-toggle" type="button" data-panel-target="chatPanel"><i class="fas fa-comments"></i><span>Chat</span></button>
+            <button class="panel-toggle" type="button" data-panel-target="playlistPanel"><i class="fab fa-youtube"></i><span>Create</span></button>
+            <button class="panel-toggle" type="button" data-panel-target="morePanel"><i class="fas fa-ellipsis"></i><span>More</span></button>
+        </nav>
+
+        <footer class="player-bar" aria-label="Bottom player">
+            <div class="bar-now">
+                <span id="barThumb" class="bar-thumb" aria-hidden="true"><span>RR</span></span>
+                <div class="bar-copy">
+                    <p>NOW PLAYING</p>
+                    <strong id="barStationName">Renner Radio</strong>
+                    <small id="barStationMeta">Live station signal</small>
+                </div>
+                <span class="bar-live-pill"><span class="bar-dot"></span>ON AIR</span>
             </div>
 
-            <div class="station-info">
-                <h2 id="stationName" class="sub-station-name">Loading...</h2>
-            </div>
+            <div class="control-deck" aria-label="Radio controls">
+                <section class="control-group playback-controls" aria-label="Playback controls">
+                    <p>Playback</p>
+                    <div class="button-row">
+                        <button id="prevBtn" class="nav-btn" type="button" title="Previous station" aria-label="Previous station">
+                            <i class="fas fa-step-forward"></i>
+                        </button>
+                        <button id="playBtn" class="btn neon-pulse" type="button" title="Play" aria-label="Play">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <button id="pauseBtn" class="btn hidden neon-pulse" type="button" title="Pause" aria-label="Pause">
+                            <i class="fas fa-pause"></i>
+                        </button>
+                        <button id="nextBtn" class="nav-btn" type="button" title="Next station" aria-label="Next station">
+                            <i class="fas fa-step-backward"></i>
+                        </button>
+                        <button id="randomBtn" class="nav-btn random-btn-style" type="button" title="Random station" aria-label="Random station">
+                            <i class="fas fa-random"></i>
+                        </button>
+                    </div>
+                    <div class="volume-control">
+                        <i class="fas fa-volume-down"></i>
+                        <input type="range" id="volumeSlider" min="0" max="100" value="50" aria-label="Volume">
+                        <i class="fas fa-volume-up"></i>
+                    </div>
+                    <div class="bar-waveform" aria-hidden="true">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <div class="bar-signal" aria-hidden="true">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </section>
 
-            <div class="controls-row">
-                <button id="listBtn" class="nav-btn list-btn-style" title="قائمة القنوات"><i class="fas fa-list"></i></button>
-                <button id="prevBtn" class="nav-btn"><i class="fas fa-step-forward"></i></button>
-                <button id="playBtn" class="btn neon-pulse"><i class="fas fa-play"></i></button>
-                <button id="pauseBtn" class="btn hidden neon-pulse"><i class="fas fa-pause"></i></button>
-                <button id="nextBtn" class="nav-btn"><i class="fas fa-step-backward"></i></button>
+                <section class="control-group station-controls" aria-label="Station controls">
+                    <p>Stations</p>
+                    <div class="button-row">
+                        <button id="listBtn" class="nav-btn list-btn-style" type="button" title="Station list" aria-label="Station list">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
+                </section>
+
+                <section class="control-group visual-controls" aria-label="Visual controls">
+                    <p>Visual</p>
+                    <div class="button-row">
+                        <button id="bgBtn" class="nav-btn" type="button" title="Change background" aria-label="Change background">
+                            <i class="fas fa-image"></i>
+                        </button>
+                        <button id="effectBtn" class="nav-btn" type="button" title="Visual effects" aria-label="Visual effects">
+                            <i class="fas fa-magic"></i>
+                        </button>
+                        <button id="themeBtn" class="nav-btn" type="button" title="Change theme" aria-label="Change theme">
+                            <i class="fas fa-palette"></i>
+                        </button>
+                        <button id="minimizeBtn" class="nav-btn" type="button" title="Minimize player" aria-label="Minimize player">
+                            <i class="fas fa-compress-alt"></i>
+                        </button>
+                        <button id="staticSoundBtn" class="nav-btn" type="button" title="Static sound off" aria-label="Static sound off">
+                            <i class="fas fa-broadcast-tower"></i>
+                        </button>
+                        <button id="comfortModeBtn" class="nav-btn" type="button" title="Comfort mode off" aria-label="Comfort mode off">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </section>
+
+                <section class="control-group social-controls" aria-label="Social controls">
+                    <p>Social</p>
+                    <div class="button-row">
+                        <button id="playlistPanelBtn" class="nav-btn panel-toggle" type="button" data-panel-target="playlistPanel" title="Create Community Channel" aria-label="Create Community Channel">
+                            <i class="fab fa-youtube"></i>
+                        </button>
+                        <button id="chatPanelBtn" class="nav-btn panel-toggle" type="button" data-panel-target="chatPanel" title="Anonymous Chat" aria-label="Anonymous Chat">
+                            <i class="fas fa-comments"></i>
+                        </button>
+                    </div>
+                </section>
             </div>
-            
-            <div class="volume-control">
-                <i class="fas fa-volume-down"></i>
-                <input type="range" id="volumeSlider" min="0" max="100" value="50">
-                <i class="fas fa-volume-up"></i>
-            </div>
-        </div>
-        <div id="player-wrapper"><div id="player"></div></div>
+        </footer>
     </div>
 
-    <div class="cyber-footer">
-        Developed with <span class="heart">❤️</span> by <span class="dev-name">Bodwolf</span>
-    </div>
-
-    <script>
-        // ---  قائمة القنوات ---
-        const stations = [
-            // --- LOFI ---
-            { cat: 'LOFI', freq: "88.1", name: "Retro Gamers 🎮", id: "WNsOxG0AqjA" },
-            { cat: 'LOFI', freq: "88.5", name: "Chillhop Raccoon 🦝", id: "-krocK0V9pI" },
-            { cat: 'LOFI', freq: "88.9", name: "Lofi Girl Study 📚", id: "jfKfPfyJRdk" },
-            { cat: 'LOFI', freq: "89.3", name: "Dark Ambient 🌑", id: "UiP9GxJYSrc" },
-            { cat: 'LOFI', freq: "89.7", name: "Synthwave Gaming 🌌", id: "4xDzrJKXOOY" },
-            { cat: 'LOFI', freq: "90.1", name: "Coffee Shop Vibes ☕", id: "jB4rKRzS9to" },
-            { cat: 'LOFI', freq: "90.5", name: "Rainy Night 🌧️", id: "bT-2YKuZQHw" },
-            { cat: 'LOFI', freq: "90.9", name: "Nintendo Lo-Fi 🍄", id: "3Q_S7tTICFY" },
-            { cat: 'LOFI', freq: "91.3", name: "Space Dreams ✨", id: "QkbgyegvgTU" },
-            { cat: 'LOFI', freq: "91.7", name: "ChillSynth FM 🌃", id: "UedTcufyrHc" },
-            { cat: 'LOFI', freq: "92.1", name: "Focus Study 📖", id: "WGfMj5o4s1k" },
-            { cat: 'LOFI', freq: "92.5", name: "Midnight Jazz 🎷", id: "c8tvCWjQysk" },
-            { cat: 'LOFI', freq: "92.9", name: "Coding Beats 💻", id: "3QHuVU7NAzs" },
-            { cat: 'LOFI', freq: "93.3", name: "Sunday Morning ☀️", id: "Aew8vpj_RsQ" },
-
-            // --- SONG ---
-            { cat: 'SONG', freq: "94.1", name: "Synthwave Love 💙", id: "WPXlsahEUNU" },
-            { cat: 'SONG', freq: "94.5", name: "Top Hits 2025 🔥", id: "3hZu4IUEZd8" },
-            { cat: 'SONG', freq: "94.9", name: "Nightcore Xmas ❄️", id: "59K76iHEMCA" },
-            { cat: 'SONG', freq: "95.3", name: "Jazz Classics 🎻", id: "AYGEiSm29LM" },
-            { cat: 'SONG', freq: "95.7", name: "Sunset Radio 🌇", id: "AYMBwENobVo" },
-            { cat: 'SONG', freq: "96.1", name: "Eleo Party 🎉", id: "36YnV9STBqc" },
-            { cat: 'SONG', freq: "96.5", name: "Rock Classics 🎸", id: "_1IY_q9AXv0" },
-            { cat: 'SONG', freq: "96.9", name: "Piano Covers 🎹", id: "3MOrgUjiigE" },
-            { cat: 'SONG', freq: "97.3", name: "Pop Live 2025 🎤", id: "DaepFNk0jqo" },
-            { cat: 'SONG', freq: "97.7", name: "Pop Mix 🎵", id: "YjpyOfG6iRo" },
-            { cat: 'SONG', freq: "98.1", name: "Remix Party 🎧", id: "1hedM7G9oEI" },
-            { cat: 'SONG', freq: "98.5", name: "Summer Mix 🏖️", id: "o9-Ev-7-zd0" },
-            { cat: 'SONG', freq: "98.9", name: "Acoustic Vibes 🎻", id: "-k_LwBgZQQ0" },
-            { cat: 'SONG', freq: "99.3", name: "Deep House 🌴", id: "Ma5DjZwp_Lg" },
-            { cat: 'SONG', freq: "99.7", name: "Feelings Good 😌", id: "bhS__AonGco" },
-            { cat: 'SONG', freq: "100.1", name: "Sad Songs 💔", id: "obJbLSDsBAY" },
-            { cat: 'SONG', freq: "100.5", name: "Deep Feelings 🌊", id: "BU0L7qW9Kyc" },
-            { cat: 'SONG', freq: "100.9", name: " DL Music 🌼", id: "73gaQ8KUQ3w" },
-
-            // --- FM ---
-            { cat: 'FM', freq: "107.5", name: "سافاري  FM 🎤", id: "PYuuNFg-SFg" }
-        ];
-
-        let currentStationIndex = 2; // Default: Lofi Girl
-        
-        const backgrounds = [ 
-            'https://media.giphy.com/media/tXzFpjeqVnE7m/giphy.gif', 
-            'https://i.pinimg.com/originals/37/42/94/3742942e1d424f91234de1b1b8d71b40.gif', 
-            'https://i.pinimg.com/originals/c6/a9/bf/c6a9bf7e601b747afea5cb1a255606c1.gif', 
-            'https://i.pinimg.com/originals/6c/d6/26/6cd626ea6d4e6f9dd0f6e336a29710c4.gif' 
-        ];
-        let currentBgIndex = 0;
-        const themes = ['', 'theme-purple', 'theme-orange'];
-        let currentThemeIndex = 0;
-        const weatherEffects = ['', 'effect-noise', 'effect-rain', 'effect-waves'];
-        let currentWeatherIndex = 0;
-
-        var player;
-        const radioDevice = document.querySelector('.radio-device');
-        const vinylRecord = document.querySelector('.vinyl-record');
-        const stationNameEl = document.getElementById('stationName');
-        const freqValueEl = document.getElementById('freqValue');
-        const meterBars = document.querySelectorAll('.meter-bar');
-        const playBtn = document.getElementById('playBtn');
-        const pauseBtn = document.getElementById('pauseBtn');
-        const volumeSlider = document.getElementById('volumeSlider');
-        const listBtn = document.getElementById('listBtn');
-        const channelMenu = document.getElementById('channelMenu');
-        const closeMenu = document.getElementById('closeMenu');
-        const channelsContainer = document.getElementById('channelsListContainer');
-
-        // ---  بناء القائمة---
-        function initChannelList() {
-            channelsContainer.innerHTML = '';
-            let lastCat = '';
-            
-            stations.forEach((station, index) => {
-                // عنوان التصنيف
-                if (station.cat !== lastCat) {
-                    const header = document.createElement('div');
-                    header.className = 'category-header';
-                    header.innerText = `>>> ${station.cat} <<<`;
-                    channelsContainer.appendChild(header);
-                    lastCat = station.cat;
-                }
-
-                const item = document.createElement('div');
-                item.className = 'channel-item';
-                item.innerHTML = `<span class="ch-freq">${station.freq}</span> <span class="ch-name">${station.name}</span>`;
-                item.onclick = () => { loadStation(index); toggleMenu(false); };
-                channelsContainer.appendChild(item);
-            });
-        }
-        initChannelList();
-
-        function toggleMenu(show) {
-            if (show) channelMenu.classList.remove('hidden-menu');
-            else channelMenu.classList.add('hidden-menu');
-        }
-        listBtn.addEventListener('click', () => toggleMenu(true));
-        closeMenu.addEventListener('click', () => toggleMenu(false));
-
-        function onYouTubeIframeAPIReady() { player = new YT.Player('player', { height: '200', width: '200', videoId: stations[currentStationIndex].id, playerVars: { 'playsinline': 1, 'controls': 0, 'disablekb': 1 }, events: { 'onReady': onPlayerReady } }); }
-        
-        function onPlayerReady(event) { 
-            player.setVolume(50); 
-            updateDisplayInfo();
-            if ('mediaSession' in navigator) updateMediaSession();
-        }
-
-        playBtn.addEventListener('click', () => { if(player && player.playVideo) { player.playVideo(); togglePlayState(true); } });
-        pauseBtn.addEventListener('click', () => { if(player && player.pauseVideo) { player.pauseVideo(); togglePlayState(false); } });
-        document.getElementById('nextBtn').addEventListener('click', () => loadStation(currentStationIndex + 1));
-        document.getElementById('prevBtn').addEventListener('click', () => loadStation(currentStationIndex - 1));
-        volumeSlider.addEventListener('input', (e) => { if(player) player.setVolume(e.target.value); });
-
-        document.getElementById('bgBtn').addEventListener('click', () => { currentBgIndex = (currentBgIndex + 1) % backgrounds.length; document.body.style.backgroundImage = `url('${backgrounds[currentBgIndex]}')`; });
-        document.getElementById('themeBtn').addEventListener('click', () => { if (themes[currentThemeIndex]) document.body.classList.remove(themes[currentThemeIndex]); currentThemeIndex = (currentThemeIndex + 1) % themes.length; if (themes[currentThemeIndex]) document.body.classList.add(themes[currentThemeIndex]); });
-
-        const effectBtn = document.getElementById('effectBtn');
-        const weatherOverlay = document.getElementById('weatherOverlay');
-        effectBtn.addEventListener('click', () => {
-            if (weatherEffects[currentWeatherIndex]) weatherOverlay.classList.remove(weatherEffects[currentWeatherIndex]);
-            currentWeatherIndex = (currentWeatherIndex + 1) % weatherEffects.length;
-            if (weatherEffects[currentWeatherIndex]) weatherOverlay.classList.add(weatherEffects[currentWeatherIndex]);
-            const icons = ['<i class="fas fa-magic"></i>', '<i class="fas fa-tv"></i>', '<i class="fas fa-cloud-rain"></i>', '<i class="fas fa-wind"></i>'];
-            effectBtn.innerHTML = icons[currentWeatherIndex];
-        });
-
-        const minimizeBtn = document.getElementById('minimizeBtn');
-        minimizeBtn.addEventListener('click', () => {
-            radioDevice.classList.toggle('minimized');
-            minimizeBtn.innerHTML = radioDevice.classList.contains('minimized') ? '<i class="fas fa-expand-alt"></i>' : '<i class="fas fa-compress-alt"></i>';
-        });
-
-        function loadStation(index) { 
-            currentStationIndex = (index + stations.length) % stations.length; 
-            player.loadVideoById(stations[currentStationIndex].id); 
-            updateDisplayInfo(); 
-            if ('mediaSession' in navigator) updateMediaSession();
-            if (playBtn.classList.contains('hidden')) togglePlayState(true); 
-        }
-        
-        function updateDisplayInfo() { 
-            stationNameEl.innerText = stations[currentStationIndex].name; 
-            freqValueEl.innerText = stations[currentStationIndex].freq; 
-            document.querySelectorAll('.channel-item').forEach((el, idx) => { el.classList.toggle('active-channel', idx === currentStationIndex); });
-        }
-        
-        function togglePlayState(isPlaying) {
-            playBtn.classList.toggle('hidden', isPlaying); pauseBtn.classList.toggle('hidden', !isPlaying);
-            if(isPlaying) { radioDevice.classList.add('playing'); vinylRecord.classList.add('spinning'); meterBars.forEach(bar => bar.classList.add('active')); } 
-            else { radioDevice.classList.remove('playing'); vinylRecord.classList.remove('spinning'); meterBars.forEach(bar => bar.classList.remove('active')); }
-        }
-        
-        function updateClock() { const now = new Date(); const timeString = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' }); document.getElementById('clock').innerText = timeString; } setInterval(updateClock, 1000); updateClock();
-
-        function updateMediaSession() {
-            if (!('mediaSession' in navigator)) return;
-            navigator.mediaSession.metadata = new MediaMetadata({
-                title: stations[currentStationIndex].name, artist: "bod Radio Station", album: "Live 24/7",
-                artwork: [{ src: 'https://media.giphy.com/media/tXzFpjeqVnE7m/giphy.gif', sizes: '96x96', type: 'image/gif' }]
-            });
-            navigator.mediaSession.setActionHandler('play', function() { togglePlayState(true); player.playVideo(); });
-            navigator.mediaSession.setActionHandler('pause', function() { togglePlayState(false); player.pauseVideo(); });
-            navigator.mediaSession.setActionHandler('previoustrack', function() { loadStation(currentStationIndex - 1); });
-            navigator.mediaSession.setActionHandler('nexttrack', function() { loadStation(currentStationIndex + 1); });
-        }
-    </script>
+    <!-- V13.1: custom English names will connect to the anonymous profile display without changing Firebase auth. -->
+    <!-- V14: per-station animated backgrounds can attach to station metadata and existing background controls. -->
+    <!-- V14.1: glitch/static transitions and sound should hook into loadStation without blocking playback. -->
+    <!-- V15.4: cinematic UI polish prepares thumbnail/background/fallback placeholders for the future Studio Panel. -->
+    <!-- V16: Studio Panel can become another dashboard/mobile panel beside chat and community channels. -->
+    <script type="module" src="firebase.js?v=16.2"></script>
+    <script src="stations.js?v=15.4"></script>
+    <script src="config.js?v=15.4"></script>
+    <script src="app.js?v=16.4"></script>
+    <script src="playlist.js?v=15.4"></script>
+    <script src="chat.js?v=15.4"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>
+
