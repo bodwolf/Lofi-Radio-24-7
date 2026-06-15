@@ -42,13 +42,25 @@ jobs:
       - name: Check JavaScript
         run: npm run check
 
+      - name: Prepare Pages files
+        run: |
+          mkdir -p dist
+          rsync -a \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='node_modules' \
+            --exclude='dist' \
+            ./ dist/
+          test -f dist/firebase-config.js
+          ls -la dist
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: dist
 
   deploy:
     environment:
