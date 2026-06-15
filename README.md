@@ -1,6 +1,6 @@
 # Renner Radio
 
-Renner Radio is a static cyberpunk lo-fi radio dashboard with YouTube playback, realtime chat, temporary community channels, and private Studio Panel controls.
+Renner Radio is a cyberpunk lo-fi radio dashboard with realtime chat, Community FM channels, and a private Studio Panel.
 
 The app stays frontend-only: no framework, no backend server, and no committed private Firebase values.
 
