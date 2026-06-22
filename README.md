@@ -2,7 +2,7 @@
 
 # 🌌 Renner Radio
 
-### Cyberpunk lo-fi radio dashboard for focus, chill, and late-night sessions.
+###  lo-fi radio dashboard for focus, chill, and late-night sessions.
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-Open%20Project-7dd3fc?style=for-the-badge)](https://rennerlabs.github.io/Lofi-Radio-24-7/)
 [![JavaScript](https://img.shields.io/badge/Vanilla-JavaScript-f7df1e?style=for-the-badge\&logo=javascript\&logoColor=111)](#tech-stack)
